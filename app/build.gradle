@@ -11,7 +11,7 @@ androidExtensions {
 }
 
 def computeVersionCode() {
-    ext.buildNumber = System.getenv("BUILD_NUMBER") ?: 18
+    ext.buildNumber = System.getenv("BUILD_NUMBER") ?: 19
     return "$buildNumber".toInteger()
 }
 
@@ -73,14 +73,22 @@ android {
     }
     packagingOptions {
         pickFirst("META-INF/atomicfu.kotlin_module")
+        exclude 'log4j.properties'
+
     }
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
@@ -141,14 +149,21 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
 
     // Wallet kits
-    implementation 'com.github.horizontalsystems:bitcoin-kit-android:53e09a5'
+    //implementation ('com.github.hashengineering:bitcoin-kit-android:add-grs-SNAPSHOT') { changing = true }
     implementation 'com.github.horizontalsystems:ethereum-kit-android:e6492fe'
-    implementation 'com.github.horizontalsystems:blockchain-fee-rate-kit-android:15df939'
+    //implementation 'com.github.horizontalsystems:blockchain-fee-rate-kit-android:15df939'
     implementation 'com.github.horizontalsystems:hd-wallet-kit-android:68903dc'
     implementation 'com.github.horizontalsystems:binance-chain-kit-android:559255e'
     implementation('com.github.horizontalsystems:eos-kit-android:42fbfd5') {
         exclude group: 'com.google.protobuf'
     }
+    //these are to support local aar files in the libs folder
+    implementation 'de.sfuhrm:saphir-hash-jca:3.0.5'
+    api 'org.dashj:dashj-bls:0.15.3'
+    implementation 'com.eclipsesource.minimal-json:minimal-json:0.9.5'
+
+
+
 
     androidTestImplementation 'androidx.test:runner:1.3.0-alpha02'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha02'
@@ -169,4 +184,9 @@ dependencies {
 
 configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+repositories {
+    mavenLocal()
+    jcenter()
+    google()
 }
