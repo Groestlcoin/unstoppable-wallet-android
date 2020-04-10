@@ -5,10 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import io.horizontalsystems.bankwallet.BaseActivity
 import io.horizontalsystems.bankwallet.R
-import io.horizontalsystems.bankwallet.ui.extensions.TopMenuItem
+import io.horizontalsystems.views.TopMenuItem
 import kotlinx.android.synthetic.main.activity_about_settings.*
 
-class AboutSettingsActivity: BaseActivity() {
+class AboutSettingsActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +16,7 @@ class AboutSettingsActivity: BaseActivity() {
 
         shadowlessToolbar.bind(
                 title = getString(R.string.SettingsAbout_Title),
-                leftBtnItem = TopMenuItem(R.drawable.back, onClick = { onBackPressed() })
+                leftBtnItem = TopMenuItem(R.drawable.ic_back, onClick = { onBackPressed() })
         )
     }
 

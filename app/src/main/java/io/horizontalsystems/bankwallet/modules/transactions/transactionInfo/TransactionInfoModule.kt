@@ -1,7 +1,8 @@
 package io.horizontalsystems.bankwallet.modules.transactions.transactionInfo
 
 import io.horizontalsystems.bankwallet.entities.Wallet
-import io.horizontalsystems.bankwallet.viewHelpers.TextHelper
+import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
+import java.util.*
 
 object TransactionInfoModule {
     interface View {
@@ -10,7 +11,9 @@ object TransactionInfoModule {
 
     interface ViewDelegate {
         fun onCopy(value: String)
-        fun openFullInfo(transactionHash: String, coin: Wallet)
+        fun openFullInfo(transactionHash: String, wallet: Wallet)
+        fun onClickLockInfo(lockDate: Date)
+        fun onClickDoubleSpendInfo(transactionHash: String, conflictingTxHash: String)
     }
 
     interface Interactor {
@@ -21,6 +24,8 @@ object TransactionInfoModule {
 
     interface Router {
         fun openFullInfo(transactionHash: String, wallet: Wallet)
+        fun openLockInfo(lockDate: Date)
+        fun openDoubleSpendInfo(transactionHash: String, conflictingTxHash: String)
     }
 
     fun init(view: TransactionInfoViewModel, router: Router) {

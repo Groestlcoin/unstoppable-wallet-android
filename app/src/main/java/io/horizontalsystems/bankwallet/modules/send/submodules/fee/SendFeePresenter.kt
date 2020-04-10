@@ -1,54 +1,71 @@
 package io.horizontalsystems.bankwallet.modules.send.submodules.fee
 
+import androidx.lifecycle.ViewModel
 import io.horizontalsystems.bankwallet.core.FeeRatePriority
 import io.horizontalsystems.bankwallet.entities.*
 import io.horizontalsystems.bankwallet.modules.send.SendModule
 import io.horizontalsystems.bankwallet.modules.send.SendModule.AmountInfo
 import io.horizontalsystems.bankwallet.modules.send.SendModule.AmountInfo.CoinValueInfo
 import io.horizontalsystems.bankwallet.modules.send.SendModule.AmountInfo.CurrencyValueInfo
+import io.horizontalsystems.core.entities.Currency
 import java.math.BigDecimal
 
-
 class SendFeePresenter(
+        val view: SendFeeModule.IView,
         private val interactor: SendFeeModule.IInteractor,
         private val helper: SendFeePresenterHelper,
         private val baseCoin: Coin,
         private val baseCurrency: Currency,
         private val feeCoinData: Pair<Coin, String>?)
-    : SendFeeModule.IViewDelegate, SendFeeModule.IInteractorDelegate, SendFeeModule.IFeeModule {
+    : ViewModel(), SendFeeModule.IViewDelegate, SendFeeModule.IFeeModule, SendFeeModule.IInteractorDelegate {
 
-    var view: SendFeeModule.IView? = null
     var moduleDelegate: SendFeeModule.IFeeModuleDelegate? = null
 
-    private var xRate: Rate? = null
+    private var xRate: BigDecimal? = null
     private var inputType = SendModule.InputType.COIN
 
     private var fee: BigDecimal = BigDecimal.ZERO
     private var availableFeeBalance: BigDecimal? = null
+    private var feeRateInfo = FeeRateInfo(FeeRatePriority.MEDIUM, 1, 2 * 60 * 60)
+    private var error: Exception? = null
 
     private var feeRates: List<FeeRateInfo>? = null
-    private var feeRateInfo = FeeRateInfo(FeeRatePriority.MEDIUM, 0, 0)
+        set(value) {
+            field = value
+            value?.let {
+                getFeeRateInfoByPriority(it, FeeRatePriority.MEDIUM)?.let { feeInfo ->
+                    feeRateInfo = feeInfo
+                    syncFeeRateLabels()
+                }
+            }
+        }
 
     private val coin: Coin
         get() = feeCoinData?.first ?: baseCoin
 
     private fun syncError() {
+
+        if (error != null) {
+            view.setError(error)
+            return
+        }
+
         try {
             validate()
-            view?.setInsufficientFeeBalanceError(null)
+            view.setInsufficientFeeBalanceError(null)
         } catch (e: SendFeeModule.InsufficientFeeBalance) {
-            view?.setInsufficientFeeBalanceError(e)
+            view.setInsufficientFeeBalanceError(e)
         }
     }
 
     private fun syncFeeLabels() {
-        view?.setPrimaryFee(helper.feeAmount(fee, SendModule.InputType.COIN, xRate))
-        view?.setSecondaryFee(helper.feeAmount(fee, SendModule.InputType.CURRENCY, xRate))
+        view.setPrimaryFee(helper.feeAmount(fee, SendModule.InputType.COIN, xRate))
+        view.setSecondaryFee(helper.feeAmount(fee, SendModule.InputType.CURRENCY, xRate))
     }
 
     private fun syncFeeRateLabels() {
-        view?.setDuration(feeRateInfo.duration)
-        view?.setFeePriority(feeRateInfo.priority)
+        view.setDuration(feeRateInfo.duration)
+        view.setFeePriority(feeRateInfo.priority)
     }
 
     private fun validate() {
@@ -70,8 +87,18 @@ class SendFeePresenter(
             false
         }
 
-    override val feeRate
-        get() = feeRateInfo.feeRate
+    override val feeRateState: FeeState
+        get() {
+            if (error != null) {
+                return FeeState.Error(error as Exception)
+            }
+            if (feeRates != null) {
+                return FeeState.Value(feeRateInfo.feeRate)
+            }
+
+            return FeeState.Loading
+        }
+
 
     override val primaryAmountInfo: AmountInfo
         get() {
@@ -79,7 +106,7 @@ class SendFeePresenter(
                 SendModule.InputType.COIN -> CoinValueInfo(CoinValue(coin, fee))
                 SendModule.InputType.CURRENCY -> {
                     this.xRate?.let { xRate ->
-                        CurrencyValueInfo(CurrencyValue(baseCurrency, fee * xRate.value))
+                        CurrencyValueInfo(CurrencyValue(baseCurrency, fee * xRate))
                     } ?: throw Exception("Invalid state")
                 }
             }
@@ -91,19 +118,38 @@ class SendFeePresenter(
                 SendModule.InputType.COIN -> CoinValueInfo(CoinValue(coin, fee))
                 SendModule.InputType.CURRENCY -> {
                     this.xRate?.let { xRate ->
-                        CurrencyValueInfo(CurrencyValue(baseCurrency, fee * xRate.value))
+                        CurrencyValueInfo(CurrencyValue(baseCurrency, fee * xRate))
                     }
                 }
             }
         }
 
+    override val feeRate: Long
+        get() = feeRateInfo.feeRate
+
     override val duration: Long?
         get() = feeRateInfo.duration
+
+    override fun setLoading(loading: Boolean) {
+        view.setLoading(loading)
+    }
 
     override fun setFee(fee: BigDecimal) {
         this.fee = fee
         syncFeeLabels()
         syncError()
+    }
+
+    override fun setError(externalError: Exception?) {
+        this.error = externalError
+        syncError()
+    }
+
+    override fun fetchFeeRate() {
+        feeRates = null
+        error = null
+
+        interactor.syncFeeRate()
     }
 
     override fun setAvailableFeeBalance(availableFeeBalance: BigDecimal) {
@@ -118,13 +164,7 @@ class SendFeePresenter(
     // SendFeeModule.IViewDelegate
 
     override fun onViewDidLoad() {
-        interactor.getRate(coin.code)
-
-        feeRates = interactor.getFeeRates()
-
-        feeRates?.find { it.priority == FeeRatePriority.MEDIUM }?.let {
-            feeRateInfo = it
-        }
+        xRate = interactor.getRate(coin.code)
 
         syncFeeRateLabels()
         syncFeeLabels()
@@ -133,10 +173,14 @@ class SendFeePresenter(
 
     override fun onClickFeeRatePriority() {
         feeRates?.let {
-            view?.showFeeRatePrioritySelector(it.map { rateInfo ->
+            view.showFeeRatePrioritySelector(it.map { rateInfo ->
                 feeRateInfoViewItem(rateInfo)
             })
         }
+    }
+
+    private fun getFeeRateInfoByPriority(searchList: List<FeeRateInfo>, priority: FeeRatePriority): FeeRateInfo? {
+        return searchList.find { it.priority == priority }
     }
 
     private fun feeRateInfoViewItem(rateInfo: FeeRateInfo): SendFeeModule.FeeRateInfoViewItem {
@@ -149,19 +193,29 @@ class SendFeePresenter(
 
         syncFeeRateLabels()
 
-        moduleDelegate?.onUpdateFeeRate(feeRate)
+        moduleDelegate?.onUpdateFeeRate()
     }
 
-    override fun onClear() {
-        interactor.clear()
+    // IInteractorDelegate
+
+    override fun didUpdate(feeRates: List<FeeRateInfo>) {
+        this.feeRates = feeRates
+        moduleDelegate?.onUpdateFeeRate()
     }
 
-    // SendFeeModule.IInteractorDelegate
+    override fun didReceiveError(error: Exception) {
+        this.error = error
+        moduleDelegate?.onUpdateFeeRate()
+    }
 
-    override fun onRateFetched(latestRate: Rate?) {
-        xRate = latestRate
+    override fun didUpdateExchangeRate(rate: BigDecimal) {
+        xRate = rate
         syncFeeLabels()
-        syncError()
     }
 
+    // ViewModel
+
+    override fun onCleared() {
+        interactor.onClear()
+    }
 }

@@ -6,7 +6,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <io.horizontalsystems.bankwallet.ui.extensions.ShadowlessToolbarView
+    <io.horizontalsystems.views.ShadowlessToolbarView
         android:id="@+id/shadowlessToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,54 +27,86 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <io.horizontalsystems.bankwallet.modules.settings.SettingsItemView
+            <io.horizontalsystems.views.CellView
                 android:id="@+id/manageKeys"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                app:imageDrawable="@drawable/ic_manage_keys"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:setting_arrow="true"
-                app:setting_icon="@drawable/ic_manage_keys"
-                app:setting_title="@string/SettingsSecurity_ManageKeys" />
+                app:rightArrow="true"
+                app:title="@string/SettingsSecurity_ManageKeys" />
 
-            <View
-                android:id="@+id/bottomShade_1"
+            <io.horizontalsystems.views.CellView
+                android:id="@+id/blockchainSettings"
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="?SettingsSectionBottomShadeColor"
+                android:layout_height="wrap_content"
+                app:bottomBorder="true"
+                app:imageDrawable="@drawable/ic_blocks"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/manageKeys" />
+                app:layout_constraintTop_toBottomOf="@+id/manageKeys"
+                app:rightArrow="true"
+                app:title="@string/SettingsSecurity_BlockchainSettings" />
 
-            <io.horizontalsystems.bankwallet.modules.settings.SettingsItemView
+            <io.horizontalsystems.views.CellView
                 android:id="@+id/enablePin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                app:layout_constraintTop_toBottomOf="@+id/manageKeys"
-                app:setting_icon="@drawable/ic_passcode"
-                app:setting_title="@string/SettingsSecurity_EnablePin" />
+                app:imageDrawable="@drawable/ic_passcode"
+                app:layout_constraintTop_toBottomOf="@+id/blockchainSettings"
+                app:title="@string/SettingsSecurity_EnablePin" />
 
-            <io.horizontalsystems.bankwallet.modules.settings.SettingsItemView
+            <io.horizontalsystems.views.CellView
                 android:id="@+id/changePin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:bottomBorder="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/enablePin"
-                app:setting_arrow="true"
-                app:setting_title="@string/SettingsSecurity_EditPin" />
+                app:rightArrow="true"
+                app:title="@string/SettingsSecurity_EditPin" />
 
-            <io.horizontalsystems.bankwallet.modules.settings.SettingsItemView
+            <io.horizontalsystems.views.CellView
                 android:id="@+id/fingerprint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                app:bottomBorder="true"
+                app:imageDrawable="@drawable/ic_fingerprint"
                 app:layout_constraintTop_toBottomOf="@+id/changePin"
-                app:setting_icon="@drawable/ic_fingerprint"
-                app:setting_title="@string/SettingsSecurity_Fingerprint" />
+                app:title="@string/SettingsSecurity_Fingerprint" />
+
+            <io.horizontalsystems.views.CellView
+                android:id="@+id/torConnectionSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/fingerprint"
+                app:title="@string/SettingsSecurity_EnableTor" />
+
+            <TextView
+                android:id="@+id/torConnectionDescription"
+                style="@style/Subhead2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:textColor="?ColorJacob"
+                android:background="@drawable/background_yellow_for_alert_text"
+                android:paddingStart="12dp"
+                android:visibility="gone"
+                android:paddingTop="8dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="8dp"
+                android:text="@string/SettingsSecurity_TorConnectionDescription"
+                app:layout_constraintTop_toBottomOf="@+id/torConnectionSwitch" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

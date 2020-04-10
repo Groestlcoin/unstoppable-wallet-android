@@ -8,7 +8,7 @@ import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.providers.Bit
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.providers.EosResponse
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.providers.EthereumResponse
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.views.FullTransactionInfoActivity
-import io.horizontalsystems.bankwallet.viewHelpers.TextHelper
+import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
 import io.reactivex.Flowable
 
 object FullTransactionInfoModule {
@@ -17,12 +17,13 @@ object FullTransactionInfoModule {
         fun showLoading()
         fun hideLoading()
         fun hideError()
-        fun showError(providerName: String?)
+        fun showErrorProviderOffline(providerName: String)
+        fun showErrorTransactionNotFound(providerName: String)
         fun showCopied()
         fun openUrl(url: String)
         fun openProviderSettings(coin: Coin, transactionHash: String)
         fun share(url: String)
-        fun showShareButton()
+        fun setShareButtonVisibility(visible: Boolean)
     }
 
     interface ViewDelegate {
@@ -55,7 +56,8 @@ object FullTransactionInfoModule {
     interface InteractorDelegate {
         fun onProviderChange()
         fun onReceiveTransactionInfo(transactionRecord: FullTransactionRecord)
-        fun onError(providerName: String?)
+        fun onProviderOffline(providerName: String)
+        fun onTransactionNotFound(providerName: String)
         fun retryLoadInfo()
     }
 
@@ -63,6 +65,7 @@ object FullTransactionInfoModule {
 
     interface Provider {
         val name: String
+        val pingUrl: String
 
         fun url(hash: String): String?
         fun apiRequest(hash: String): Request

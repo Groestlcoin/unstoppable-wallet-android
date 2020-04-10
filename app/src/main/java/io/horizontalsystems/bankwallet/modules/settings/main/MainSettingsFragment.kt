@@ -7,22 +7,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import io.horizontalsystems.bankwallet.BuildConfig
 import io.horizontalsystems.bankwallet.R
+import io.horizontalsystems.bankwallet.core.utils.ModuleCode
+import io.horizontalsystems.bankwallet.modules.contact.ContactModule
 import io.horizontalsystems.bankwallet.modules.main.MainActivity
 import io.horizontalsystems.bankwallet.modules.main.MainModule
 import io.horizontalsystems.bankwallet.modules.managecoins.ManageWalletsModule
 import io.horizontalsystems.bankwallet.modules.notifications.NotificationsModule
-import io.horizontalsystems.bankwallet.modules.reportproblem.ReportProblemModule
 import io.horizontalsystems.bankwallet.modules.settings.AboutSettingsActivity
-import io.horizontalsystems.bankwallet.modules.settings.basecurrency.BaseCurrencySettingsModule
-import io.horizontalsystems.bankwallet.modules.settings.language.LanguageSettingsModule
+import io.horizontalsystems.bankwallet.modules.settings.experimental.ExperimentalFeaturesModule
 import io.horizontalsystems.bankwallet.modules.settings.security.SecuritySettingsModule
+import io.horizontalsystems.core.CoreApp
+import io.horizontalsystems.currencyswitcher.CurrencySwitcherModule
+import io.horizontalsystems.languageswitcher.LanguageSwitcherModule
 import kotlinx.android.synthetic.main.fragment_settings.*
-
 
 class MainSettingsFragment : Fragment() {
 
@@ -33,9 +36,7 @@ class MainSettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        shadowlessToolbar.bindTitle(getString(R.string.Settings_Title))
-
-        val presenter = ViewModelProviders.of(this, MainSettingsModule.Factory()).get(MainSettingsPresenter::class.java)
+        val presenter = ViewModelProvider(this, MainSettingsModule.Factory()).get(MainSettingsPresenter::class.java)
         val presenterView = presenter.view as MainSettingsView
         val router = presenter.router as MainSettingsRouter
 
@@ -48,12 +49,22 @@ class MainSettingsFragment : Fragment() {
         presenter.viewDidLoad()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == ModuleCode.LANGUAGE_SWITCH && resultCode == LanguageSwitcherModule.LANGUAGE_CHANGED) {
+            activity?.let { MainModule.startAsNewTask(it, MainActivity.SETTINGS_TAB_POSITION) }
+        }
+    }
+
     private fun bindViewListeners(presenter: MainSettingsPresenter) {
         securityCenter.setOnClickListener { presenter.didTapSecurity() }
 
         notifications.setOnClickListener { presenter.didTapNotifications() }
 
         manageCoins.setOnClickListener { presenter.didManageCoins() }
+
+        experimentalFeatures.setOnClickListener { presenter.didTapExperimentalFeatures() }
 
         baseCurrency.setOnClickListener { presenter.didTapBaseCurrency() }
 
@@ -73,17 +84,17 @@ class MainSettingsFragment : Fragment() {
     private fun subscribeToViewEvents(presenterView: MainSettingsView, presenter: MainSettingsPresenter) {
         presenterView.baseCurrency.observe(viewLifecycleOwner, Observer { currency ->
             currency?.let {
-                baseCurrency.selectedValue = it
+                baseCurrency.rightTitle = it
             }
         })
 
         presenterView.backedUp.observe(viewLifecycleOwner, Observer { wordListBackedUp ->
-            securityCenter.setInfoBadgeVisibility(!wordListBackedUp)
+            securityCenter.badge = !wordListBackedUp
         })
 
         presenterView.language.observe(viewLifecycleOwner, Observer { languageCode ->
             languageCode?.let {
-                language.selectedValue = it
+                language.rightTitle = it
             }
         })
 
@@ -112,11 +123,11 @@ class MainSettingsFragment : Fragment() {
 
     private fun subscribeToRouterEvents(router: MainSettingsRouter) {
         router.showBaseCurrencySettingsLiveEvent.observe(viewLifecycleOwner, Observer {
-            context?.let { context -> BaseCurrencySettingsModule.start(context) }
+            context?.let { context -> CurrencySwitcherModule.start(context) }
         })
 
         router.showLanguageSettingsLiveEvent.observe(viewLifecycleOwner, Observer {
-            context?.let { context -> LanguageSettingsModule.start(context) }
+            LanguageSwitcherModule.start(this, ModuleCode.LANGUAGE_SWITCH)
         })
 
         router.showAboutLiveEvent.observe(viewLifecycleOwner, Observer {
@@ -133,7 +144,7 @@ class MainSettingsFragment : Fragment() {
 
         router.showReportProblemLiveEvent.observe(viewLifecycleOwner, Observer {
             activity?.let {
-                ReportProblemModule.start(it)
+                ContactModule.start(it)
             }
         })
 
@@ -144,7 +155,11 @@ class MainSettingsFragment : Fragment() {
         })
 
         router.showManageCoinsLiveEvent.observe(viewLifecycleOwner, Observer {
-            context?.let { ManageWalletsModule.start(it) }
+            context?.let { ManageWalletsModule.start(it, false) }
+        })
+
+        router.showExperimentalFeaturesLiveEvent.observe(viewLifecycleOwner, Observer {
+            activity?.let { ExperimentalFeaturesModule.start(it) }
         })
 
         router.openLinkLiveEvent.observe(viewLifecycleOwner, Observer { link ->
@@ -162,8 +177,11 @@ class MainSettingsFragment : Fragment() {
         })
 
         router.reloadAppLiveEvent.observe(viewLifecycleOwner, Observer {
-            activity?.let { MainModule.startAsNewTask(it, MainActivity.SETTINGS_TAB_POSITION) }
+            val nightMode = if (CoreApp.themeStorage.isLightModeOn)
+                AppCompatDelegate.MODE_NIGHT_NO else
+                AppCompatDelegate.MODE_NIGHT_YES
+
+            AppCompatDelegate.setDefaultNightMode(nightMode)
         })
     }
-
 }

@@ -13,8 +13,7 @@ object RestoreWordsModule {
 
     interface ViewDelegate {
         val words: List<String>
-        fun onChange(position: Int, word: String)
-        fun onDone()
+        fun onDone(wordsString: String?)
     }
 
     interface Interactor {
@@ -28,12 +27,12 @@ object RestoreWordsModule {
 
     interface Router {
         fun notifyRestored()
-        fun startSyncModeModule()
     }
 
-    fun startForResult(context: AppCompatActivity, wordsCount: Int, requestCode: Int) {
+    fun startForResult(context: AppCompatActivity, wordsCount: Int, titleRes: Int, requestCode: Int) {
         val intent = Intent(context, RestoreWordsActivity::class.java).apply {
             putExtra(ModuleField.WORDS_COUNT, wordsCount)
+            putExtra(ModuleField.ACCOUNT_TYPE_TITLE, titleRes)
         }
 
         context.startActivityForResult(intent, requestCode)
@@ -41,8 +40,7 @@ object RestoreWordsModule {
 
     fun init(view: RestoreWordsViewModel, router: Router, wordsCount: Int) {
         val interactor = RestoreWordsInteractor(App.wordsManager)
-        val showSyncMode = wordsCount == 12
-        val presenter = RestoreWordsPresenter(wordsCount, showSyncMode, interactor, router)
+        val presenter = RestoreWordsPresenter(wordsCount, interactor, router)
 
         view.delegate = presenter
         presenter.view = view

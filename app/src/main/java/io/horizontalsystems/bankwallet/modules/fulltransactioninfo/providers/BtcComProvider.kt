@@ -8,14 +8,17 @@ import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.FullTransacti
 import java.util.*
 
 class BtcComBitcoinProvider : FullTransactionInfoModule.BitcoinForksProvider {
+    private val baseApiUrl = "https://chain.api.btc.com/v3"
+
     override val name = "Btc.com"
+    override val pingUrl = "$baseApiUrl/block/0"
 
     override fun url(hash: String): String {
         return "https://btc.com/$hash"
     }
 
     override fun apiRequest(hash: String): FullTransactionInfoModule.Request {
-        return GetRequest("https://chain.api.btc.com/v3/tx/$hash")
+        return GetRequest("$baseApiUrl/tx/$hash")
     }
 
     override fun convert(json: JsonObject): BitcoinResponse {
@@ -24,14 +27,17 @@ class BtcComBitcoinProvider : FullTransactionInfoModule.BitcoinForksProvider {
 }
 
 class BtcComBitcoinCashProvider : FullTransactionInfoModule.BitcoinForksProvider {
+    private val baseApiUrl = "https://bch-chain.api.btc.com/v3"
+
     override val name = "Btc.com"
+    override val pingUrl = "$baseApiUrl/block/0"
 
     override fun url(hash: String): String {
         return "https://bch.btc.com/$hash"
     }
 
     override fun apiRequest(hash: String): FullTransactionInfoModule.Request {
-        return GetRequest("https://bch-chain.api.btc.com/v3/tx/$hash")
+        return GetRequest("$baseApiUrl/tx/$hash")
     }
 
     override fun convert(json: JsonObject): BitcoinResponse {
@@ -51,7 +57,7 @@ class BtcComResponse(
 
     override val fee get() = fees.toDouble() / btcRate
     override val feePerByte: Double? get() = null
-    override val date: Date get() = Date(time * 1000)
+    override val date get() = Date(time * 1000)
     override val inputs get() = vin as ArrayList<Input>
     override val outputs get() = vout as ArrayList<Output>
 

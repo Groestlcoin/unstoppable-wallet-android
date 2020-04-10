@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewStub
 import android.widget.TextView
 import androidx.annotation.NonNull
-import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
@@ -18,24 +17,20 @@ import io.horizontalsystems.bankwallet.BaseActivity
 import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.entities.Wallet
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.FullTransactionInfoModule
-import io.horizontalsystems.bankwallet.modules.receive.ReceiveView
-import io.horizontalsystems.bankwallet.modules.receive.ReceiveViewModel
 import io.horizontalsystems.bankwallet.modules.send.SendActivity
 import io.horizontalsystems.bankwallet.modules.transactions.TransactionViewItem
 import io.horizontalsystems.bankwallet.modules.transactions.transactionInfo.TransactionInfoView
 import io.horizontalsystems.bankwallet.modules.transactions.transactionInfo.TransactionInfoViewModel
-import io.horizontalsystems.bankwallet.viewHelpers.LayoutHelper
+import io.horizontalsystems.views.LayoutHelper
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_dashboard.*
 import kotlinx.android.synthetic.main.main_activity_view_pager_layout.*
 
-class MainActivity : BaseActivity(), ReceiveView.Listener, TransactionInfoView.Listener {
+class MainActivity : BaseActivity(), TransactionInfoView.Listener {
 
     private var adapter: MainTabsAdapter? = null
     private var disposables = CompositeDisposable()
-    private var receiveViewModel: ReceiveViewModel? = null
     private var transInfoViewModel: TransactionInfoViewModel? = null
-    private var receiveBottomSheetBehavior: BottomSheetBehavior<View>? = null
     private var txInfoBottomSheetBehavior: BottomSheetBehavior<View>? = null
 
     private lateinit var viewModel: MainViewModel
@@ -46,7 +41,7 @@ class MainActivity : BaseActivity(), ReceiveView.Listener, TransactionInfoView.L
         setContentView(R.layout.activity_dashboard)
         setTransparentStatusBar()
 
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         viewModel.init()
 
         adapter = MainTabsAdapter(supportFragmentManager)
@@ -55,15 +50,11 @@ class MainActivity : BaseActivity(), ReceiveView.Listener, TransactionInfoView.L
             it.inflate()
             loadViewPager()
         }
-
     }
 
     override fun onBackPressed() = when {
         txInfoBottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED -> {
             txInfoBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-        receiveBottomSheetBehavior?.state == BottomSheetBehavior.STATE_EXPANDED -> {
-            receiveBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
         (adapter?.currentItem ?: 0) > 0 -> {
             viewPager.currentItem = 0
@@ -79,30 +70,6 @@ class MainActivity : BaseActivity(), ReceiveView.Listener, TransactionInfoView.L
     override fun onDestroy() {
         disposables.dispose()
         super.onDestroy()
-    }
-
-    /***
-    Receive bottomsheet
-     */
-
-    fun openReceiveDialog(wallet: Wallet) {
-        receiveViewModel?.init(wallet)
-    }
-
-    override fun expandReceiveDialog() {
-        receiveBottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
-    }
-
-    override fun closeReceiveDialog() {
-        receiveBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
-        hideDim()
-    }
-
-    override fun shareReceiveAddress(address: String) {
-        ShareCompat.IntentBuilder.from(this)
-                .setType("text/plain")
-                .setText(address)
-                .startChooser()
     }
 
     fun openSend(wallet: Wallet) {
@@ -146,7 +113,7 @@ class MainActivity : BaseActivity(), ReceiveView.Listener, TransactionInfoView.L
         ahBottomNavigation.addItem(AHBottomNavigationItem(R.string.Transactions_Title, R.drawable.transactions, 0))
         ahBottomNavigation.addItem(AHBottomNavigationItem(R.string.Settings_Title, R.drawable.settings, 0))
 
-        ahBottomNavigation.accentColor = ContextCompat.getColor(this, R.color.yellow_crypto)
+        ahBottomNavigation.accentColor = ContextCompat.getColor(this, R.color.yellow_d)
         ahBottomNavigation.inactiveColor = ContextCompat.getColor(this, R.color.grey)
         ahBottomNavigation.titleState = AHBottomNavigation.TitleState.ALWAYS_HIDE
         ahBottomNavigation.setUseElevation(false)
@@ -181,20 +148,12 @@ class MainActivity : BaseActivity(), ReceiveView.Listener, TransactionInfoView.L
     private fun preloadBottomSheets() {
         Handler().postDelayed({
             setBottomSheets()
-            //receive
-            receiveBottomSheetBehavior = BottomSheetBehavior.from(receiveNestedScrollView)
-            setBottomSheet(receiveBottomSheetBehavior)
-
-            receiveViewModel = ViewModelProviders.of(this).get(ReceiveViewModel::class.java)
-            receiveViewModel?.let {
-                receiveView.bind(it, this, this)
-            }
 
             //transaction info
             txInfoBottomSheetBehavior = BottomSheetBehavior.from(transactionInfoNestedScrollView)
             setBottomSheet(txInfoBottomSheetBehavior)
 
-            transInfoViewModel = ViewModelProviders.of(this).get(TransactionInfoViewModel::class.java)
+            transInfoViewModel = ViewModelProvider(this).get(TransactionInfoViewModel::class.java)
 
             transInfoViewModel?.let {
                 it.init()
@@ -207,7 +166,6 @@ class MainActivity : BaseActivity(), ReceiveView.Listener, TransactionInfoView.L
         hideDim()
 
         bottomSheetDim.setOnClickListener {
-            receiveBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
             txInfoBottomSheetBehavior?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
@@ -219,10 +177,12 @@ class MainActivity : BaseActivity(), ReceiveView.Listener, TransactionInfoView.L
     }
 
     private fun setBottomSheet(bottomSheetBehavior: BottomSheetBehavior<View>?) {
-        bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetBehavior?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                     bottomSheetBehavior.isFitToContents = true
+                    bottomSheetDim.alpha = 1f
+                    bottomSheetDim.visibility = View.VISIBLE
                 }
             }
 

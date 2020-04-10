@@ -1,5 +1,7 @@
 package io.horizontalsystems.bankwallet.modules.send
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import io.horizontalsystems.bankwallet.core.*
 import io.horizontalsystems.bankwallet.entities.CoinValue
 import io.horizontalsystems.bankwallet.entities.CurrencyValue
@@ -19,7 +21,10 @@ import io.horizontalsystems.bankwallet.modules.send.ethereum.SendEthereumInterac
 import io.horizontalsystems.bankwallet.modules.send.submodules.address.SendAddressModule
 import io.horizontalsystems.bankwallet.modules.send.submodules.amount.SendAmountModule
 import io.horizontalsystems.bankwallet.modules.send.submodules.fee.SendFeeModule
+import io.horizontalsystems.bankwallet.modules.send.submodules.hodler.SendHodlerModule
 import io.horizontalsystems.bankwallet.modules.send.submodules.memo.SendMemoModule
+import io.horizontalsystems.bitcoincore.core.IPluginData
+import io.horizontalsystems.hodler.LockTimeInterval
 import io.reactivex.Single
 import java.math.BigDecimal
 
@@ -32,7 +37,7 @@ object SendModule {
         fun setSendButtonEnabled(enabled: Boolean)
         fun showConfirmation(confirmationViewItems: List<SendConfirmationViewItem>)
         fun showErrorInToast(error: Throwable)
-        fun showErrorInDialog(coinException: CoinException)
+        fun showErrorInDialog(coinException: LocalizedException)
     }
 
     interface IViewDelegate {
@@ -48,10 +53,14 @@ object SendModule {
     }
 
     interface ISendBitcoinInteractor {
-        fun fetchAvailableBalance(feeRate: Long, address: String?)
-        fun fetchFee(amount: BigDecimal, feeRate: Long, address: String?)
-        fun validate(address: String)
-        fun send(amount: BigDecimal, address: String, feeRate: Long): Single<Unit>
+        val isLockTimeEnabled: Boolean
+
+        fun fetchAvailableBalance(feeRate: Long, address: String?, pluginData: Map<Byte, IPluginData>?)
+        fun fetchMinimumAmount(address: String?): BigDecimal
+        fun fetchMaximumAmount(pluginData: Map<Byte, IPluginData>): BigDecimal?
+        fun fetchFee(amount: BigDecimal, feeRate: Long, address: String?, pluginData: Map<Byte, IPluginData>?)
+        fun validate(address: String, pluginData: Map<Byte, IPluginData>?)
+        fun send(amount: BigDecimal, address: String, feeRate: Long, pluginData: Map<Byte, IPluginData>?): Single<Unit>
         fun clear()
     }
 
@@ -62,6 +71,7 @@ object SendModule {
 
     interface ISendDashInteractor {
         fun fetchAvailableBalance(address: String?)
+        fun fetchMinimumAmount(address: String?): BigDecimal
         fun fetchFee(amount: BigDecimal, address: String?)
         fun validate(address: String)
         fun send(amount: BigDecimal, address: String): Single<Unit>
@@ -88,11 +98,15 @@ object SendModule {
 
     interface ISendEthereumInteractor {
         val ethereumBalance: BigDecimal
+        val minimumRequiredBalance: BigDecimal
+        val minimumAmount: BigDecimal
 
-        fun availableBalance(gasPrice: Long): BigDecimal
+        fun availableBalance(gasPrice: Long, gasLimit: Long?): BigDecimal
         fun validate(address: String)
-        fun fee(gasPrice: Long): BigDecimal
-        fun send(amount: BigDecimal, address: String, gasPrice: Long): Single<Unit>
+        fun fee(gasPrice: Long, gasLimit: Long): BigDecimal
+        fun send(amount: BigDecimal, address: String, gasPrice: Long, gasLimit: Long): Single<Unit>
+        fun estimateGasLimit(toAddress: String, value: BigDecimal, gasPrice: Long?): Single<Long>
+
     }
 
     interface ISendBinanceInteractor {
@@ -124,6 +138,7 @@ object SendModule {
     }
 
     interface ISendInteractorDelegate {
+        fun sync()
         fun didSend()
         fun didFailToSend(error: Throwable)
     }
@@ -133,12 +148,16 @@ object SendModule {
         var addressModule: SendAddressModule.IAddressModule
         var feeModule: SendFeeModule.IFeeModule
         var memoModule: SendMemoModule.IMemoModule
+        var hodlerModule: SendHodlerModule.IHodlerModule?
 
         val inputItems: List<Input>
         var delegate: ISendHandlerDelegate
 
+        fun sync()
         fun onModulesDidLoad()
         fun onAddressScan(address: String)
+        fun onClear() {}
+
         @Throws
         fun confirmationViewItems(): List<SendConfirmationViewItem>
         fun sendSingle(): Single<Unit>
@@ -152,7 +171,8 @@ object SendModule {
 
     data class SendConfirmationAmountViewItem(val primaryInfo: AmountInfo,
                                               val secondaryInfo: AmountInfo?,
-                                              val receiver: String) : SendConfirmationViewItem()
+                                              val receiver: String,
+                                              val locked: Boolean = false) : SendConfirmationViewItem()
 
     data class SendConfirmationFeeViewItem(val primaryInfo: AmountInfo,
                                            val secondaryInfo: AmountInfo?) : SendConfirmationViewItem()
@@ -164,88 +184,98 @@ object SendModule {
 
     data class SendConfirmationDurationViewItem(val duration: Long?) : SendConfirmationViewItem()
 
+    data class SendConfirmationLockTimeViewItem(val lockTimeInterval: LockTimeInterval) : SendConfirmationViewItem()
 
-    fun init(viewModel: SendViewModel, wallet: Wallet): IViewDelegate {
-        val handler: ISendHandler = when (val adapter = App.adapterManager.getAdapterForWallet(wallet)) {
-            is ISendBitcoinAdapter -> {
-                val interactor = SendBitcoinInteractor(adapter)
-                val handler = SendBitcoinHandler(interactor, viewModel)
+    class Factory(private val wallet: Wallet) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
-                interactor.delegate = handler
+            val view = SendView()
+            val interactor: ISendInteractor = SendInteractor()
+            val router = SendRouter()
+            val presenter = SendPresenter(interactor, router)
 
-                viewModel.amountModuleDelegate = handler
-                viewModel.addressModuleDelegate = handler
-                viewModel.feeModuleDelegate = handler
+            val handler: ISendHandler = when (val adapter = App.adapterManager.getAdapterForWallet(wallet)) {
+                is ISendBitcoinAdapter -> {
+                    val bitcoinInteractor = SendBitcoinInteractor(adapter, App.localStorage)
+                    val handler = SendBitcoinHandler(bitcoinInteractor, router, wallet.coin.type)
 
-                handler
+                    bitcoinInteractor.delegate = handler
+
+                    presenter.amountModuleDelegate = handler
+                    presenter.addressModuleDelegate = handler
+                    presenter.feeModuleDelegate = handler
+                    presenter.hodlerModuleDelegate = handler
+
+                    handler
+                }
+                is ISendDashAdapter -> {
+                    val dashInteractor = SendDashInteractor(adapter)
+                    val handler = SendDashHandler(dashInteractor, router)
+
+                    dashInteractor.delegate = handler
+
+                    presenter.amountModuleDelegate = handler
+                    presenter.addressModuleDelegate = handler
+                    presenter.feeModuleDelegate = handler
+
+                    handler
+                }
+                is ISendGroestlcoinAdapter -> {
+                    val grsInteractor = SendGroestlcoinInteractor(adapter)
+                    val handler = SendGroestlcoinHandler(grsInteractor, router)
+
+                    grsInteractor.delegate = handler
+
+                    presenter.amountModuleDelegate = handler
+                    presenter.addressModuleDelegate = handler
+                    presenter.feeModuleDelegate = handler
+
+                    handler
+                }
+                is ISendEthereumAdapter -> {
+                    val ethereumInteractor = SendEthereumInteractor(adapter)
+                    val handler = SendEthereumHandler(ethereumInteractor, router)
+
+                    presenter.amountModuleDelegate = handler
+                    presenter.addressModuleDelegate = handler
+                    presenter.feeModuleDelegate = handler
+
+                    handler
+                }
+                is ISendBinanceAdapter -> {
+                    val binanceInteractor = SendBinanceInteractor(adapter)
+                    val handler = SendBinanceHandler(binanceInteractor, router)
+
+                    presenter.amountModuleDelegate = handler
+                    presenter.addressModuleDelegate = handler
+                    presenter.feeModuleDelegate = handler
+
+                    handler
+                }
+                is ISendEosAdapter -> {
+                    val eosInteractor = SendEosInteractor(adapter)
+                    val handler = SendEosHandler(eosInteractor, router)
+
+                    presenter.amountModuleDelegate = handler
+                    presenter.addressModuleDelegate = handler
+
+                    handler
+                }
+                else -> {
+                    throw Exception("No adapter found!")
+                }
             }
-            is ISendDashAdapter -> {
-                val interactor = SendDashInteractor(adapter)
-                val handler = SendDashHandler(interactor, viewModel)
 
-                interactor.delegate = handler
+            presenter.view = view
+            presenter.handler = handler
 
-                viewModel.amountModuleDelegate = handler
-                viewModel.addressModuleDelegate = handler
+            view.delegate = presenter
+            handler.delegate = presenter
+            interactor.delegate = presenter
 
-                handler
-            }
-            is ISendGroestlcoinAdapter -> {
-                val interactor = SendGroestlcoinInteractor(adapter)
-                val handler = SendGroestlcoinHandler(interactor, viewModel)
-
-                interactor.delegate = handler
-
-                viewModel.amountModuleDelegate = handler
-                viewModel.addressModuleDelegate = handler
-
-                handler
-            }
-            is ISendEthereumAdapter -> {
-                val interactor = SendEthereumInteractor(adapter)
-                val handler = SendEthereumHandler(interactor, viewModel)
-
-                viewModel.amountModuleDelegate = handler
-                viewModel.addressModuleDelegate = handler
-                viewModel.feeModuleDelegate = handler
-
-                handler
-            }
-            is ISendBinanceAdapter -> {
-                val interactor = SendBinanceInteractor(adapter)
-                val handler = SendBinanceHandler(interactor, viewModel)
-
-                viewModel.amountModuleDelegate = handler
-                viewModel.addressModuleDelegate = handler
-
-                handler
-            }
-            is ISendEosAdapter -> {
-                val interactor = SendEosInteractor(adapter)
-                val handler = SendEosHandler(interactor, viewModel)
-
-                viewModel.amountModuleDelegate = handler
-                viewModel.addressModuleDelegate = handler
-
-                handler
-            }
-            else -> {
-                throw Exception("No adapter found!")
-            }
+            return presenter as T
         }
-        val view: IView = viewModel
-        val router: IRouter = viewModel
-        val interactor: ISendInteractor = SendInteractor()
-
-        val presenter = SendPresenter(interactor, router, handler)
-
-        presenter.view = view
-
-        view.delegate = presenter
-        handler.delegate = presenter
-        interactor.delegate = presenter
-
-        return presenter
     }
 
     enum class InputType {
@@ -258,10 +288,11 @@ object SendModule {
 
     sealed class Input {
         object Amount : Input()
-        object Address : Input()
+        class Address(val editable: Boolean = false) : Input()
         class Fee(val isAdjustable: Boolean) : Input()
-        class Memo(val maxLength: Int): Input()
+        class Memo(val maxLength: Int) : Input()
         object ProceedButton : Input()
+        object Hodler : Input()
     }
 
     sealed class AmountInfo {

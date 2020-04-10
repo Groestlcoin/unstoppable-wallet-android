@@ -2,7 +2,7 @@ package io.horizontalsystems.bankwallet.modules.restore.eos
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import io.horizontalsystems.bankwallet.viewHelpers.TextHelper
+import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
 
 object RestoreEosModule {
 
@@ -37,7 +37,8 @@ object RestoreEosModule {
     }
 
     fun startForResult(context: AppCompatActivity, requestCode: Int) {
-        context.startActivityForResult(Intent(context, RestoreEosActivity::class.java), requestCode)
+        val intent = Intent(context, RestoreEosActivity::class.java)
+        context.startActivityForResult(intent, requestCode)
     }
 
     fun init(view: RestoreEosViewModel, router: IRouter) {

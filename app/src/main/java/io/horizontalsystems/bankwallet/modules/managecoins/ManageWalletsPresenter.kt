@@ -1,147 +1,127 @@
 package io.horizontalsystems.bankwallet.modules.managecoins
 
-import io.horizontalsystems.bankwallet.core.DefaultAccountType
-import io.horizontalsystems.bankwallet.core.IPredefinedAccountType
-import io.horizontalsystems.bankwallet.entities.AccountType
-import io.horizontalsystems.bankwallet.entities.Coin
-import io.horizontalsystems.bankwallet.entities.SyncMode
-import io.horizontalsystems.bankwallet.entities.Wallet
+import androidx.lifecycle.ViewModel
+import io.horizontalsystems.bankwallet.entities.*
+import io.horizontalsystems.bankwallet.modules.createwallet.view.CoinManageViewItem
+import io.horizontalsystems.bankwallet.modules.createwallet.view.CoinManageViewType
+import io.horizontalsystems.bankwallet.modules.createwallet.view.CoinViewItem
 
-class ManageWalletsPresenter(private val interactor: ManageWalletsModule.IInteractor, private val router: ManageWalletsModule.IRouter)
-    : ManageWalletsModule.IViewDelegate, ManageWalletsModule.IInteractorDelegate {
+class ManageWalletsPresenter(
+        private val interactor: ManageWalletsModule.IInteractor,
+        private val isColdStart: Boolean,
+        val showCloseButton: Boolean,
+        val router: ManageWalletsModule.IRouter,
+        val view: ManageWalletsModule.IView
+) : ViewModel(), ManageWalletsModule.IViewDelegate {
 
-    var view: ManageWalletsModule.IView? = null
-
-    private var items = mutableListOf<ManageWalletItem>()
-    private var popularItems = mutableListOf<ManageWalletItem>()
-    private val popularCoinCodes = listOf("BTC", "BCH", "ETH", "DASH", "GRS", "EOS", "BNB")
-    private var currentItem: ManageWalletItem? = null
+    private val wallets = mutableMapOf<Coin, Wallet>()
 
     //  ViewDelegate
 
-    override fun viewDidLoad() {
-        val wallets = interactor.wallets
+    override fun onLoad() {
+        if (isColdStart) {
+            interactor.loadAccounts()
+            interactor.loadWallets()
+        }
 
-        val popularCoins = interactor.coins.filter { popularCoinCodes.contains(it.code) }
-        val coins = interactor.coins.filter { !popularCoinCodes.contains(it.code) }
+        interactor.wallets.forEach { wallet ->
+            wallets[wallet.coin] = wallet
+        }
 
-        popularItems = popularCoins.map { coin ->
-            ManageWalletItem(coin, wallets.find { it.coin == coin })
-        }.toMutableList()
-
-        items = coins.map { coin ->
-            ManageWalletItem(coin, wallets.find { it.coin == coin })
-        }.toMutableList()
+        syncViewItems()
     }
 
-    override fun onClickCreateKey() {
-        val item = currentItem ?: return
+    override fun onEnable(coin: Coin) {
+        val account = account(coin) ?: return
+        createWallet(coin, account)
+    }
 
+    override fun onDisable(coin: Coin) {
+        val wallet = wallets[coin] ?: return
+
+        interactor.delete(wallet)
+        wallets.remove(coin)
+    }
+
+    override fun onSelect(coin: Coin) {
+        view.showNoAccountDialog(coin, coin.type.predefinedAccountType)
+    }
+
+    override fun onSelectNewAccount(predefinedAccountType: PredefinedAccountType) {
         try {
-            item.wallet = interactor.createWallet(item.coin)
-            view?.showSuccess()
+            val account = interactor.createAccount(predefinedAccountType)
+            handleCreated(account)
+            view.showSuccess()
         } catch (e: Exception) {
-            view?.showError(e)
+            syncViewItems()
+            view.showError(e)
         }
     }
 
-    override fun onClickRestoreKey() {
-        val item = currentItem ?: return
+    override fun onSelectRestoreAccount(predefinedAccountType: PredefinedAccountType) {
+        router.openRestore(predefinedAccountType)
+    }
 
-        when (val accountType = item.coin.type.defaultAccountType) {
-            is DefaultAccountType.Mnemonic -> {
-                router.openRestoreWordsModule(accountType.wordsCount)
-            }
-            is DefaultAccountType.Eos -> {
-                router.openRestoreEosModule()
-            }
+    override fun didRestore(accountType: AccountType) {
+        val account = interactor.createRestoredAccount(accountType)
+        handleCreated(account)
+
+        if (accountType is AccountType.Mnemonic && accountType.words.size == 12) {
+            router.showCoinSettings()
+        } else {
+            view.showSuccess()
         }
+    }
+
+    override fun onCoinSettingsClose() {
+        view.showSuccess()
     }
 
     override fun onClickCancel() {
-        view?.updateCoins()
+        syncViewItems()
     }
 
-    override fun onRestore(accountType: AccountType, syncMode: SyncMode?) {
-        val item = currentItem ?: return
+    private fun account(coin: Coin): Account? {
+        return interactor.accounts.firstOrNull { coin.type.canSupport(it.type) }
+    }
 
-        try {
-            item.wallet = interactor.restoreWallet(item.coin, accountType, syncMode)
-        } catch (e: Exception) {
-            view?.showError(e)
+    private fun viewItem(coin: Coin): CoinManageViewItem {
+        val hasAccount = account(coin) != null
+        val type: CoinManageViewType = when {
+            hasAccount -> CoinManageViewType.CoinWithSwitch(wallets[coin] != null)
+            else -> CoinManageViewType.CoinWithArrow
         }
+
+        return CoinManageViewItem(type, CoinViewItem(coin))
     }
 
-    override val popularItemsCount: Int
-        get() = popularItems.size
+    private fun syncViewItems() {
+        val featuredCoinIds = interactor.featuredCoins.map { it.coinId }
+        val featured = interactor.featuredCoins.map { viewItem(it) }
+        val others = interactor.coins.filter { !featuredCoinIds.contains(it.coinId) }.map { viewItem(it) }
+        val viewItems = mutableListOf<CoinManageViewItem>()
 
-    override fun popularItem(position: Int): ManageWalletViewItem {
-        return viewItem(popularItems[position])
-    }
-
-    override val itemsCount: Int
-        get() = items.size
-
-    override fun item(position: Int): ManageWalletViewItem {
-        return viewItem(items[position])
-    }
-
-    override fun enablePopularCoin(position: Int) {
-        enable(popularItems[position])
-    }
-
-    override fun disablePopularCoin(position: Int) {
-        disable(popularItems[position])
-    }
-
-    override fun enableCoin(position: Int) {
-        enable(items[position])
-    }
-
-    override fun disableCoin(position: Int) {
-        disable(items[position])
-    }
-
-    override fun saveChanges() {
-        interactor.saveWallets((items + popularItems).mapNotNull { it.wallet })
-    }
-
-    //  InteractorDelegate
-
-    override fun didSaveChanges() {
-        router.close()
-    }
-
-    //  Private
-
-    private fun enable(item: ManageWalletItem) {
-        val coin = item.coin
-        val wallet = interactor.wallet(coin)
-        if (wallet == null) {
-            currentItem = item
-            val accountType = getPredefinedAccountType(coin.type.defaultAccountType)
-            accountType?.let {
-                view?.showNoAccountDialog(coin, it)
-            }
-        } else {
-            item.wallet = wallet
+        if (featured.isNotEmpty()) {
+            viewItems.addAll(featured)
+            viewItems.add(CoinManageViewItem(CoinManageViewType.Divider))
         }
+        viewItems.addAll(others)
+
+        view.setItems(viewItems)
     }
 
-    private fun getPredefinedAccountType(coinDefaultAccountType: DefaultAccountType): IPredefinedAccountType? {
-        return interactor.predefinedAccountTypes.firstOrNull {
-            it.defaultAccountType == coinDefaultAccountType
-        }
+    private fun createWallet(coin: Coin, account: Account) {
+        val coinSettings = interactor.getCoinSettings(coin.type)
+
+        val wallet = Wallet(coin, account, coinSettings)
+
+        interactor.save(wallet)
+        wallets[coin] = wallet
     }
 
-    private fun disable(item: ManageWalletItem) {
-        item.wallet = null
-    }
+    private fun handleCreated(account: Account) {
+        interactor.save(account)
 
-    private fun viewItem(item: ManageWalletItem): ManageWalletViewItem {
-        return ManageWalletViewItem(item.coin, enabled = item.wallet != null)
+        syncViewItems()
     }
 }
-
-data class ManageWalletItem(val coin: Coin, var wallet: Wallet?)
-data class ManageWalletViewItem(val coin: Coin, val enabled: Boolean)

@@ -1,5 +1,6 @@
 package io.horizontalsystems.bankwallet.core.managers
 
+import io.horizontalsystems.bankwallet.core.IAccountCleaner
 import io.horizontalsystems.bankwallet.core.IAccountManager
 import io.horizontalsystems.bankwallet.core.IAccountsStorage
 import io.horizontalsystems.bankwallet.entities.Account
@@ -11,7 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
-class AccountManager(private val storage: IAccountsStorage, private val accountCleaner: AccountCleaner) : IAccountManager {
+class AccountManager(private val storage: IAccountsStorage, private val accountCleaner: IAccountCleaner) : IAccountManager {
 
     private val cache = AccountsCache()
     private val accountsSubject = PublishSubject.create<List<Account>>()
@@ -33,11 +34,12 @@ class AccountManager(private val storage: IAccountsStorage, private val accountC
         return accounts.find { account -> coinType.canSupport(account.type) }
     }
 
-    override fun preloadAccounts() {
-        cache.set(storage.allAccounts())
+    override fun loadAccounts() {
+        val accounts = storage.allAccounts()
+        cache.set(accounts)
     }
 
-    override fun create(account: Account) {
+    override fun save(account: Account) {
         storage.save(account)
 
         cache.insert(account)
@@ -60,9 +62,7 @@ class AccountManager(private val storage: IAccountsStorage, private val accountC
     }
 
     override fun clear() {
-        cache.accountsSet.map { it.id }.forEach { accountId ->
-            storage.delete(accountId)
-        }
+        storage.clear()
         cache.set(listOf())
         accountsSubject.onNext(listOf())
     }

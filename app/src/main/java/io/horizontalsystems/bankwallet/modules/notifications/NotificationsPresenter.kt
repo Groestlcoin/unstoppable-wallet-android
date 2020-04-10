@@ -13,11 +13,16 @@ class NotificationsPresenter(
     private var priceAlerts = listOf<PriceAlert>()
 
     override fun viewDidLoad() {
-        priceAlerts = interactor.priceAlerts
+        priceAlerts = interactor.priceAlerts.sortedBy { it.coin.title }
 
         view.setItems(priceAlertViewItemFactory.createItems(priceAlerts))
+        view.setNotificationSwitch(interactor.notificationIsOn)
 
         checkPriceAlertsEnabled()
+    }
+
+    override fun didTapItem(itemPosition: Int) {
+        view.showStateSelector(itemPosition, priceAlerts[itemPosition])
     }
 
     override fun didSelectState(itemPosition: Int, state: PriceAlert.State) {
@@ -27,6 +32,8 @@ class NotificationsPresenter(
             priceAlert.state = state
 
             interactor.savePriceAlerts(listOf(priceAlert))
+
+            view.setItems(priceAlertViewItemFactory.createItems(priceAlerts))
         }
     }
 
@@ -44,6 +51,16 @@ class NotificationsPresenter(
 
     override fun didEnterForeground() {
         checkPriceAlertsEnabled()
+    }
+
+    override fun didSwitchAlertNotification(enabled: Boolean) {
+        if (enabled) {
+            interactor.startBackgroundRateFetchWorker()
+        } else {
+            interactor.stopBackgroundRateFetchWorker()
+        }
+        interactor.notificationIsOn = enabled
+        view.setNotificationSwitch(interactor.notificationIsOn)
     }
 
     private fun checkPriceAlertsEnabled() {

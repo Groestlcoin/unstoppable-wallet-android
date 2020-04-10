@@ -1,40 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
     <View
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
         android:background="@drawable/input_background_themed"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
         android:id="@+id/addressInputWrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="6dp"
-        android:paddingEnd="6dp"
-        android:paddingStart="12dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingEnd="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/background"
-        >
+        app:layout_constraintTop_toTopOf="@+id/background">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -42,18 +39,20 @@
             android:layout_marginEnd="6dp"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtAddress"
+            <EditText
+                android:id="@+id/txtAddressInput"
                 style="@style/Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="middle"
+                android:background="@color/transparent"
                 android:hint="@string/Send_Hint_Address"
-                android:singleLine="true"
-                android:textColor="?TextColorBarsToDark"
+                android:inputType="textMultiLine"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:singleLine="false"
+                android:textColor="?attr/TextColorBarsToDark"
                 android:textColorHint="@color/grey_50" />
 
             <TextView
@@ -62,48 +61,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:includeFontPadding="false"
-                android:textColor="@color/red_warning"
+                android:textColor="?ColorLucian"
                 android:visibility="gone"
                 tools:text="@string/Send_Error_IncorrectAddress" />
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/btnAmpersand"
-            style="@style/SendImageButtonSmallGrey"
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/ic_small_contact"
-            android:visibility="gone"
-            />
-
-        <ImageButton
             android:id="@+id/btnBarcodeScan"
-            style="@style/SendImageButtonSmallGrey"
+            style="@style/ImageButtonSecondary"
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
+            android:layout_height="32dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_scan_qr_copy"
-            android:visibility="visible"
-            />
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/btnPaste"
-            style="@style/SendButtonSmallGrey"
+            style="@style/ButtonSecondary"
             android:layout_width="wrap_content"
-            android:layout_height="28dp"
+            android:layout_height="32dp"
             android:text="@string/Send_Button_Paste"
-            android:visibility="visible"
-            />
+            android:visibility="visible" />
 
         <ImageButton
             android:id="@+id/btnDeleteAddress"
-            style="@style/SendImageButtonSmallGrey"
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:src="@drawable/round_delete_24_px"
-            android:visibility="visible"
-            />
+            style="@style/ImageButtonSecondary"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_delete"
+            android:visibility="visible" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

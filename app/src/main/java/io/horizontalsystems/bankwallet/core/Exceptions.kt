@@ -3,8 +3,6 @@ package io.horizontalsystems.bankwallet.core
 class UnsupportedAccountException : Exception()
 class EosUnsupportedException : Exception()
 class WrongAccountTypeForThisProvider : Exception()
-class WrongParameters : Exception()
-class CoinException(val errorTextRes: Int?, val nonTranslatableText: String? = null) : Exception()
-
-// Chart
-class NoRateStats: Exception()
+class LocalizedException(val errorTextRes: Int) : Exception()
+class InvalidMnemonicWordsCountException : Exception()
+class AdapterErrorWrongParameters(override val message: String) : Exception()

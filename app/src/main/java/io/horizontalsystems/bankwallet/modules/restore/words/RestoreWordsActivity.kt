@@ -2,22 +2,23 @@ package io.horizontalsystems.bankwallet.modules.restore.words
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import io.horizontalsystems.bankwallet.BaseActivity
 import io.horizontalsystems.bankwallet.R
-import io.horizontalsystems.bankwallet.core.putParcelableExtra
-import io.horizontalsystems.bankwallet.core.utils.ModuleCode
 import io.horizontalsystems.bankwallet.core.utils.ModuleField
 import io.horizontalsystems.bankwallet.core.utils.Utils
 import io.horizontalsystems.bankwallet.entities.AccountType
-import io.horizontalsystems.bankwallet.entities.SyncMode
-import io.horizontalsystems.bankwallet.modules.restore.options.RestoreOptionsModule
-import io.horizontalsystems.bankwallet.ui.extensions.TopMenuItem
-import io.horizontalsystems.bankwallet.viewHelpers.HudHelper
+import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.android.synthetic.main.activity_restore_words.*
+import java.util.*
 
-class RestoreWordsActivity : BaseActivity(), RestoreWordsAdapter.Listener {
+class RestoreWordsActivity : BaseActivity() {
 
     private lateinit var viewModel: RestoreWordsViewModel
 
@@ -25,15 +26,18 @@ class RestoreWordsActivity : BaseActivity(), RestoreWordsAdapter.Listener {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_restore_words)
-        shadowlessToolbar.bind(
-                title = getString(R.string.Restore_Title),
-                leftBtnItem = TopMenuItem(R.drawable.back, onClick = { onBackPressed() }),
-                rightBtnItem = TopMenuItem(R.drawable.checkmark_orange, onClick = { viewModel.delegate.onDone() })
-        )
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val wordsCount = intent.getIntExtra(ModuleField.WORDS_COUNT, 12)
 
-        viewModel = ViewModelProviders.of(this).get(RestoreWordsViewModel::class.java)
+        val accountTypeTitleRes = intent.getIntExtra(ModuleField.ACCOUNT_TYPE_TITLE, 0)
+        if (accountTypeTitleRes > 0) {
+            description.text = getString(R.string.Restore_Enter_Key_Description_Mnemonic, getString(accountTypeTitleRes), wordsCount.toString())
+        }
+
+        viewModel = ViewModelProvider(this).get(RestoreWordsViewModel::class.java)
         viewModel.init(wordsCount)
 
         viewModel.errorLiveData.observe(this, Observer {
@@ -42,50 +46,51 @@ class RestoreWordsActivity : BaseActivity(), RestoreWordsAdapter.Listener {
 
         viewModel.notifyRestored.observe(this, Observer {
             setResult(RESULT_OK, Intent().apply {
-                putExtra(ModuleField.ACCOUNT_TYPE, AccountType.Mnemonic(viewModel.delegate.words, AccountType.Derivation.bip44, salt = null))
+                putExtra(ModuleField.ACCOUNT_TYPE, AccountType.Mnemonic(viewModel.delegate.words, salt = null))
             })
             finish()
         })
 
-        viewModel.startSyncModeModule.observe(this, Observer {
-            RestoreOptionsModule.start(this, ModuleCode.RESTORE_OPTIONS)
-        })
+        wordsInput.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
 
-        recyclerInputs.adapter = RestoreWordsAdapter(wordsCount, this)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == ModuleCode.RESTORE_OPTIONS && data != null && resultCode == RESULT_OK) {
-            val syncMode = data.getParcelableExtra<SyncMode>(ModuleField.SYNCMODE)
-            val derivation = data.getParcelableExtra<AccountType.Derivation>(ModuleField.DERIVATION)
-
-            val intent = Intent().apply {
-                putExtra(ModuleField.ACCOUNT_TYPE, AccountType.Mnemonic(viewModel.delegate.words, derivation, salt = null))
-                putParcelableExtra(ModuleField.SYNCMODE, syncMode)
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                isUsingNativeKeyboard()
             }
 
-            setResult(RESULT_OK, intent)
-            finish()
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        //fixes scrolling in EditText when it's inside NestedScrollView
+        wordsInput.setOnTouchListener { v, event ->
+            if (wordsInput.hasFocus()) {
+                v.parent.requestDisallowInterceptTouchEvent(true)
+                when (event.action and MotionEvent.ACTION_MASK) {
+                    MotionEvent.ACTION_SCROLL -> {
+                        v.parent.requestDisallowInterceptTouchEvent(false)
+                        return@setOnTouchListener true
+                    }
+                }
+            }
+            return@setOnTouchListener false
         }
+
     }
 
-    //  WordsInputAdapter Listener
-
-    override fun onChange(position: Int, word: String) {
-        if (isUsingNativeKeyboard()) {
-            viewModel.delegate.onChange(position, word)
-        }
-    }
-
-    override fun onDone() {
-        viewModel.delegate.onDone()
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.restore_menu, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menuRestore ->  {
+                val cleanedString = wordsInput.text?.toString()?.trim()?.toLowerCase(Locale.ENGLISH)?.replace(Regex("(\\s)+"), " ")
+                viewModel.delegate.onDone(cleanedString)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     //  Private

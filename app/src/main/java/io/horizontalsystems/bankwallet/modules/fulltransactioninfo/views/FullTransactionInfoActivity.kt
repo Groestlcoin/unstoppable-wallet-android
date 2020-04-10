@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.horizontalsystems.bankwallet.BaseActivity
@@ -19,8 +19,8 @@ import io.horizontalsystems.bankwallet.entities.FullTransactionItem
 import io.horizontalsystems.bankwallet.entities.Wallet
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.FullTransactionInfoViewModel
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.dataprovider.DataProviderSettingsModule
-import io.horizontalsystems.bankwallet.ui.extensions.TopMenuItem
-import io.horizontalsystems.bankwallet.viewHelpers.HudHelper
+import io.horizontalsystems.core.helpers.HudHelper
+import io.horizontalsystems.views.TopMenuItem
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_full_transaction_info.*
 import kotlinx.android.synthetic.main.view_holder_full_transaction.*
@@ -36,10 +36,10 @@ class FullTransactionInfoActivity : BaseActivity(), FullTransactionInfoErrorFrag
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val transactionHash = intent.getStringExtra(transactionHashKey)
-        val wallet = intent.getParcelableExtra<Wallet>(walletKey)
+        val transactionHash = intent.getStringExtra(transactionHashKey) ?: run { finish(); return }
+        val wallet = intent.getParcelableExtra<Wallet>(walletKey) ?: run { finish(); return }
 
-        viewModel = ViewModelProviders.of(this).get(FullTransactionInfoViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(FullTransactionInfoViewModel::class.java)
         viewModel.init(transactionHash, wallet)
 
         setContentView(R.layout.activity_full_transaction_info)
@@ -54,10 +54,9 @@ class FullTransactionInfoActivity : BaseActivity(), FullTransactionInfoErrorFrag
         //
         // LiveData
         //
-        viewModel.showShareButton.observe(this, Observer {
-            shadowlessToolbar.bind(
-                    title = null,
-                    leftBtnItem = TopMenuItem(text = R.string.Button_Share, onClick = { viewModel.share() })
+        viewModel.shareButtonVisibility.observe(this, Observer { visible ->
+            shadowlessToolbar.bindLeftButton(
+                    leftBtnItem = if (visible) TopMenuItem(text = R.string.Button_Share, onClick = { viewModel.share() }) else null
             )
         })
 
@@ -77,7 +76,7 @@ class FullTransactionInfoActivity : BaseActivity(), FullTransactionInfoErrorFrag
         })
 
         viewModel.showCopiedLiveEvent.observe(this, Observer {
-            HudHelper.showSuccessMessage(R.string.Hud_Text_Copied, 500)
+            HudHelper.showSuccessMessage(R.string.Hud_Text_Copied)
         })
 
         viewModel.openLinkLiveEvent.observe(this, Observer { url ->
@@ -94,20 +93,29 @@ class FullTransactionInfoActivity : BaseActivity(), FullTransactionInfoErrorFrag
             }
         })
 
-        viewModel.showErrorLiveEvent.observe(this, Observer { error ->
-            error?.let { (show, providerName) ->
-                if (show && providerName != null) {
-                    errorContainer.visibility = View.VISIBLE
 
-                    val fragment = FullTransactionInfoErrorFragment.newInstance(providerName)
-                    val transaction = supportFragmentManager.beginTransaction()
+        viewModel.hideError.observe(this, Observer {
+            errorContainer.visibility = View.GONE
+        })
 
-                    transaction.replace(R.id.errorContainer, fragment)
-                    transaction.commit()
-                } else {
-                    errorContainer.visibility = View.INVISIBLE
-                }
-            }
+        viewModel.showErrorProviderOffline.observe(this, Observer { providerName ->
+            val errorMessage = getString(R.string.FullInfo_Error_ProviderOffline)
+            val fragment = FullTransactionInfoErrorFragment.newInstance(providerName, errorMessage, R.drawable.dragon_icon)
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.errorContainer, fragment)
+            transaction.commit()
+
+            errorContainer.visibility = View.VISIBLE
+        })
+
+        viewModel.showErrorTransactionNotFound.observe(this, Observer { providerName ->
+            val errorMessage = getString(R.string.FullInfo_Error_TransactionNotFound)
+            val fragment = FullTransactionInfoErrorFragment.newInstance(providerName, errorMessage, R.drawable.ic_attention, showRetry = false)
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.errorContainer, fragment)
+            transaction.commit()
+
+            errorContainer.visibility = View.VISIBLE
         })
 
         viewModel.showShareLiveEvent.observe(this, Observer { url ->
@@ -210,6 +218,7 @@ class SectionViewAdapter(val context: Context) : RecyclerView.Adapter<RecyclerVi
                     if (!viewModel.delegate.canShowTransactionInProviderSite) {
                         holder.transactionLink.visibility = View.GONE
                     } else {
+                        holder.transactionLink.visibility = View.VISIBLE
                         val changeProviderStyle = SpannableString(providerName)
                         changeProviderStyle.setSpan(UnderlineSpan(), 0, changeProviderStyle.length, 0)
 

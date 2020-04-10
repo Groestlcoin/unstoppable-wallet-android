@@ -7,7 +7,7 @@ import io.horizontalsystems.bankwallet.core.factories.FeeCoinProvider
 import io.horizontalsystems.bankwallet.entities.*
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.FullTransactionInfoModule
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.providers.EthereumResponse
-import io.horizontalsystems.bankwallet.viewHelpers.DateHelper
+import io.horizontalsystems.core.helpers.DateHelper
 import java.math.BigInteger
 
 class FullTransactionEthereumAdapter(private val provider: FullTransactionInfoModule.EthereumForksProvider,
@@ -21,7 +21,7 @@ class FullTransactionEthereumAdapter(private val provider: FullTransactionInfoMo
 
         mutableListOf<FullTransactionItem>().let { section ->
             data.date?.let {
-                section.add(FullTransactionItem(R.string.FullInfo_Time, value = DateHelper.getFullDateWithShortMonth(it), icon = FullTransactionIcon.TIME))
+                section.add(FullTransactionItem(R.string.FullInfo_Time, value = DateHelper.getFullDate(it), icon = FullTransactionIcon.TIME))
             }
             section.add(FullTransactionItem(R.string.FullInfo_Block, value = data.height, icon = FullTransactionIcon.BLOCK))
             data.confirmations?.let {

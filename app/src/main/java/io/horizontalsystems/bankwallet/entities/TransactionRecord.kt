@@ -1,9 +1,10 @@
 package io.horizontalsystems.bankwallet.entities
 
+import io.horizontalsystems.bankwallet.modules.transactions.TransactionLockInfo
 import java.math.BigDecimal
-import java.util.*
 
 data class TransactionRecord(
+        val uid: String,
         val transactionHash: String,
         val transactionIndex: Int,
         val interTransactionIndex: Int,
@@ -11,8 +12,12 @@ data class TransactionRecord(
         val amount: BigDecimal,
         val fee: BigDecimal? = null,
         val timestamp: Long,
-        val from: List<TransactionAddress>,
-        val to: List<TransactionAddress>)
+        val from: String?,
+        val to: String?,
+        val type: TransactionType,
+        val lockInfo: TransactionLockInfo? = null,
+        val failed: Boolean = false,
+        val conflictingTxHash: String? = null)
     : Comparable<TransactionRecord> {
 
     override fun compareTo(other: TransactionRecord): Int {
@@ -25,13 +30,13 @@ data class TransactionRecord(
 
     override fun equals(other: Any?): Boolean {
         if (other is TransactionRecord) {
-            return transactionHash == other.transactionHash && interTransactionIndex == other.interTransactionIndex
+            return uid == other.uid
         }
         return super.equals(other)
     }
 
     override fun hashCode(): Int {
-        return Objects.hash(transactionHash, interTransactionIndex)
+        return uid.hashCode()
     }
 }
 
@@ -52,4 +57,7 @@ data class TransactionItem(val wallet: Wallet, val record: TransactionRecord) : 
     }
 }
 
-class TransactionAddress(val address: String, val mine: Boolean)
+enum class TransactionType {
+    Incoming, Outgoing, SentToSelf
+}
+

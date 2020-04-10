@@ -1,206 +1,280 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/viewHolderRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="13dp"
     android:layout_marginEnd="13dp"
     android:background="?CoinItemBackground"
-    android:orientation="vertical"
-    android:paddingStart="11dp"
-    android:paddingTop="8dp"
-    android:paddingEnd="11dp"
-    android:paddingBottom="16dp">
+    android:paddingStart="3dp"
+    android:paddingEnd="3dp"
+    android:paddingBottom="8dp">
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/textSyncingGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="textSyncing,textSyncedUntil" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:layout_marginBottom="12dp"
-        android:clipChildren="true">
+    <!-- first line -->
 
-        <!-- first line -->
+    <ImageView
+        android:id="@+id/coinBackgroundSquare"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/coin_icon_square"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <View
-            android:id="@+id/chartButton"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="@+id/chartViewCard"
-            app:layout_constraintStart_toStartOf="@+id/chartViewCard" />
+    <io.horizontalsystems.bankwallet.ui.extensions.RotatingCircleProgressView
+        android:id="@+id/iconProgress"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        app:layout_constraintBottom_toBottomOf="@+id/coinBackgroundSquare"
+        app:layout_constraintEnd_toEndOf="@+id/coinBackgroundSquare"
+        app:layout_constraintStart_toStartOf="@+id/coinBackgroundSquare"
+        app:layout_constraintTop_toTopOf="@+id/coinBackgroundSquare" />
 
-        <io.horizontalsystems.bankwallet.ui.extensions.CoinIconView
-            android:id="@+id/coinIcon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="0dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <io.horizontalsystems.views.IconView
+        android:id="@+id/iconCoin"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/coinBackgroundSquare"
+        app:layout_constraintEnd_toEndOf="@+id/coinBackgroundSquare"
+        app:layout_constraintStart_toStartOf="@+id/coinBackgroundSquare"
+        app:layout_constraintTop_toTopOf="@+id/coinBackgroundSquare" />
 
-        <io.horizontalsystems.bankwallet.ui.extensions.RotatingCircleProgressView
-            android:id="@+id/iconProgress"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="@+id/coinIcon"
-            app:layout_constraintTop_toTopOf="@+id/coinIcon" />
+    <ImageView
+        android:id="@+id/iconNotSynced"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/grey"
+        android:indeterminateTintMode="src_atop"
+        android:src="@drawable/ic_attention"
+        android:tint="?ColorLucian"
+        app:layout_constraintBottom_toBottomOf="@+id/coinBackgroundSquare"
+        app:layout_constraintEnd_toEndOf="@+id/coinBackgroundSquare"
+        app:layout_constraintStart_toStartOf="@+id/coinBackgroundSquare"
+        app:layout_constraintTop_toTopOf="@+id/coinBackgroundSquare" />
+
+    <TextView
+        android:id="@+id/coinName"
+        style="@style/Headline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:singleLine="true"
+        android:textColor="?BallanceCoinNameColor"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/coinLabel"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/coinBackgroundSquare"
+        app:layout_constraintTop_toTopOf="@+id/coinBackgroundSquare"
+        tools:text="Coin rgre" />
+
+    <TextView
+        android:id="@+id/coinLabel"
+        style="@style/TextLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/coinName"
+        app:layout_constraintEnd_toStartOf="@+id/rateDiffWrapper"
+        app:layout_constraintStart_toEndOf="@+id/coinName"
+        app:layout_constraintTop_toTopOf="@+id/coinName"
+        tools:text="ERC20" />
+
+    <TextView
+        android:id="@+id/exchangeRate"
+        style="@style/Subhead2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:includeFontPadding="false"
+        android:textColor="@color/grey"
+        app:layout_constraintStart_toStartOf="@+id/coinName"
+        app:layout_constraintTop_toBottomOf="@+id/coinName"
+        tools:text="$6500 per BTC" />
+
+    <FrameLayout
+        android:id="@+id/rateDiffWrapper"
+        android:layout_width="80dp"
+        android:layout_height="42dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/stateful_rate_diff_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imgSyncFailed"
+            android:id="@+id/rateDiffIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminateTint="@color/grey"
-            android:indeterminateTintMode="src_atop"
-            android:src="@drawable/ic_attention"
-            android:tint="@color/red_warning"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="4dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_down_red"/>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="26dp"
+            android:background="@color/steel_20"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center_vertical"/>
 
         <TextView
-            android:id="@+id/textCoinName"
-            style="@style/Headline2"
+            android:id="@+id/rateDiff"
+            style="@style/CaptionSB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAlignment="center"
+            android:layout_marginStart="20.5dp"
+            android:layout_marginEnd="0dp"
+            tools:text="20.87%" />
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/border"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/steel_20"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coinBackgroundSquare" />
+
+
+    <!-- Second Line-->
+
+    <TextView
+        android:id="@+id/balanceCoin"
+        style="@style/Subhead2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="11.5dp"
+        android:textColor="?BallanceCoinAmountColor"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/border"
+        tools:text="0.000078 BTC" />
+
+    <TextView
+        android:id="@+id/balanceFiat"
+        style="@style/Headline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="8.5dp"
+        android:textColor="?ColorJacob"
+        app:layout_constraintTop_toBottomOf="@+id/border"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="$52.50" />
+
+    <TextView
+        android:id="@+id/textSyncing"
+        style="@style/Subhead2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="11.5dp"
+        android:textColor="@color/grey"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/border"
+        tools:text="Syncing... 45%" />
+
+    <TextView
+        android:id="@+id/textSyncedUntil"
+        style="@style/Subhead2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="11.5dp"
+        android:textColor="@color/grey"
+        app:layout_constraintTop_toBottomOf="@id/border"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Until Dec 17. 2018" />
+
+    <View
+        android:id="@+id/collapsedBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/red_d"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/balanceCoin" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttonsWrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/collapsedBottom">
+
+        <TextView
+            android:id="@+id/balanceCoinLocked"
+            style="@style/Subhead2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:textColor="?BallanceCoinNameColor"
+            android:layout_marginStart="4dp"
+            android:drawableStart="@drawable/ic_lock"
+            android:drawablePadding="4dp"
+            android:paddingBottom="12dp"
+            android:includeFontPadding="false"
+            android:textColor="@color/grey"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Bitcoin" />
-
-        <TextView
-            android:id="@+id/coinAmount"
-            style="@style/Subhead2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="4dp"
-            android:textColor="?BallanceCoinAmountColor"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/textCoinName"
-            app:layout_constraintEnd_toEndOf="parent"
             tools:text="0.000078 BTC" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/chartViewCard"
-            android:layout_width="64dp"
-            android:layout_height="31dp"
-            android:visibility="invisible"
-            app:cardBackgroundColor="?LightBackground"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/coinIcon">
-
-            <io.horizontalsystems.bankwallet.lib.chartview.ChartView
-                android:id="@+id/chartView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:animated="false"
-                app:height="32dp"
-                app:showGrid="false"
-                app:width="64dp" />
-
-            <View
-                android:id="@+id/chartLoading"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/steel_20"
-                android:layout_marginTop="24dp"/>
-
-            <TextView
-                android:id="@+id/textChartError"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textColor="@color/grey_50"
-                tools:text="N/A"/>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Second Line-->
-
         <TextView
-            android:id="@+id/textProgress"
-            style="@style/Subhead2"
+            android:id="@+id/balanceFiatLocked"
+            style="@style/Subhead1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:includeFontPadding="false"
-            android:textColor="@color/grey"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/coinIcon"
-            tools:text="Until Dec 17. 2018" />
-
-        <TextView
-            android:id="@+id/exchangeRate"
-            style="@style/Subhead2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:includeFontPadding="false"
-            android:textColor="@color/grey"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/coinIcon"
-            tools:text="$6500 per BTC" />
-
-        <TextView
-            android:id="@+id/fiatAmount"
-            style="@style/Headline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
             android:layout_marginEnd="4dp"
             android:includeFontPadding="false"
-            android:textColor="@color/yellow_crypto"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingBottom="12dp"
+            android:textColor="?ColorLeah"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="$52.50" />
-
-        <TextView
-            android:id="@+id/chartRateDiff"
-            style="@style/Headline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:includeFontPadding="false"
-            android:textColor="@color/red_warning"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="-0.23%" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:id="@+id/buttonsWrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="visible">
 
         <Button
             android:id="@+id/buttonReceive"
-            style="@style/ButtonGreen"
+            style="@style/ButtonPrimaryGreen"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="@string/Balance_Deposit" />
+            android:text="@string/Balance_Deposit"
+            app:layout_constraintEnd_toStartOf="@+id/buttonSend"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/balanceCoinLocked" />
 
         <Button
-            android:id="@+id/buttonPay"
-            style="@style/ButtonYellow"
+            android:id="@+id/buttonSend"
+            style="@style/ButtonPrimaryYellow"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:text="@string/Balance_Send" />
+            android:text="@string/Balance_Send"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/buttonReceive"
+            app:layout_constraintTop_toBottomOf="@+id/balanceCoinLocked" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

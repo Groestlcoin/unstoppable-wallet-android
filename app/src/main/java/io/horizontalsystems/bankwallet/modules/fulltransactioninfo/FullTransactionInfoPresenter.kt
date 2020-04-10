@@ -31,10 +31,7 @@ class FullTransactionInfoPresenter(val interactor: FullTransactionInfoInteractor
     override fun viewDidLoad() {
         interactor.didLoad()
         interactor.updateProvider(state.wallet)
-        if (canShowTransactionInProviderSite) {
-            view?.showShareButton()
-        }
-
+        view?.setShareButtonVisibility(canShowTransactionInProviderSite)
         retryLoadInfo()
     }
 
@@ -85,9 +82,10 @@ class FullTransactionInfoPresenter(val interactor: FullTransactionInfoInteractor
     //
     override fun onProviderChange() {
         state.transactionRecord = null
-        view?.reload()
-
         interactor.updateProvider(state.wallet)
+
+        view?.reload()
+        view?.setShareButtonVisibility(canShowTransactionInProviderSite)
 
         retryLoadInfo()
     }
@@ -98,9 +96,14 @@ class FullTransactionInfoPresenter(val interactor: FullTransactionInfoInteractor
         view?.reload()
     }
 
-    override fun onError(providerName: String?) {
+    override fun onProviderOffline(providerName: String) {
         view?.hideLoading()
-        view?.showError(providerName)
+        view?.showErrorProviderOffline(providerName)
+    }
+
+    override fun onTransactionNotFound(providerName: String) {
+        view?.hideLoading()
+        view?.showErrorTransactionNotFound(providerName)
     }
 
     override fun retryLoadInfo() {

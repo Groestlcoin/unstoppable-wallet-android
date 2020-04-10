@@ -1,6 +1,5 @@
 package io.horizontalsystems.bankwallet.core.managers
 
-import io.horizontalsystems.bankwallet.core.IAppConfigProvider
 import io.horizontalsystems.bankwallet.core.ILocalStorage
 import io.horizontalsystems.bankwallet.core.ITransactionDataProviderManager
 import io.horizontalsystems.bankwallet.entities.Coin
@@ -10,9 +9,10 @@ import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.FullTransacti
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.FullTransactionInfoModule.EthereumForksProvider
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.FullTransactionInfoModule.Provider
 import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.providers.*
+import io.horizontalsystems.core.IAppConfigTestMode
 import io.reactivex.subjects.PublishSubject
 
-class TransactionDataProviderManager(appConfig: IAppConfigProvider, private val localStorage: ILocalStorage)
+class TransactionDataProviderManager(appConfig: IAppConfigTestMode, private val localStorage: ILocalStorage)
     : ITransactionDataProviderManager {
 
     private val bitcoinProviders = when {
@@ -24,9 +24,9 @@ class TransactionDataProviderManager(appConfig: IAppConfigProvider, private val 
     }
 
     private val bitcoinCashProviders = when {
-        appConfig.testMode -> listOf(BlockdozerBitcoinCashProvider(true))
+        appConfig.testMode -> listOf(CoinSpaceBitcoinCashProvider())
         else -> listOf(
-                BlockdozerBitcoinCashProvider(false),
+                CoinSpaceBitcoinCashProvider(),
                 BlockChairBitcoinCashProvider(),
                 BtcComBitcoinCashProvider())
     }
@@ -65,7 +65,7 @@ class TransactionDataProviderManager(appConfig: IAppConfigProvider, private val 
         else -> listOf(BinanceChainProvider(false))
     }
 
-    private val eosProviders = listOf(EosInfraProvider(), EosGreymassProvider())
+    private val eosProviders = listOf(EosGreymassProvider())
 
     override val baseProviderUpdatedSignal = PublishSubject.create<Unit>()
 

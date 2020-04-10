@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:paddingTop="12dp">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/feeError"
@@ -13,7 +12,7 @@
         android:layout_height="34dp"
         android:ellipsize="end"
         android:maxLines="2"
-        android:textColor="@color/red_warning"
+        android:textColor="?ColorLucian"
         android:textSize="12sp"
         android:visibility="gone"
         tools:text="Transaction fees for USDT (ERC20) paid in Ethereum. You don&apos;t have 0,00028 ETH." />
@@ -119,6 +118,28 @@
                 android:textColor="@color/grey"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txError"
+                style="@style/Subhead2"
+                android:layout_width="217dp"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:text="Error while fetching fee"
+                android:textColor="@color/red_d"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/txFeeLoading"
+                style="@style/Subhead2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:textColor="@color/grey"
+                app:layout_constraintEnd_toStartOf="@+id/txFeePrimary"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Loading..." />
 
             <TextView
                 android:id="@+id/txFeePrimary"

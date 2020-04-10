@@ -2,7 +2,7 @@ package io.horizontalsystems.bankwallet.modules.fulltransactioninfo
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import io.horizontalsystems.bankwallet.SingleLiveEvent
+import io.horizontalsystems.core.SingleLiveEvent
 import io.horizontalsystems.bankwallet.entities.Coin
 import io.horizontalsystems.bankwallet.entities.Wallet
 
@@ -13,11 +13,13 @@ class FullTransactionInfoViewModel : ViewModel(), FullTransactionInfoModule.View
     val loadingLiveData = MutableLiveData<Boolean>()
     val reloadLiveEvent = SingleLiveEvent<Void>()
     val showCopiedLiveEvent = SingleLiveEvent<Unit>()
-    val showErrorLiveEvent = SingleLiveEvent<Pair<Boolean, String?>>()
+    val showErrorProviderOffline = SingleLiveEvent<String>()
+    val showErrorTransactionNotFound = SingleLiveEvent<String>()
+    val hideError = SingleLiveEvent<Unit>()
     val showShareLiveEvent = SingleLiveEvent<String>()
     val openLinkLiveEvent = SingleLiveEvent<String>()
     val openProviderSettingsEvent = SingleLiveEvent<Pair<Coin, String>>()
-    val showShareButton = SingleLiveEvent<Void>()
+    val shareButtonVisibility = MutableLiveData<Boolean>()
 
     fun init(transactionHash: String, wallet: Wallet) {
         FullTransactionInfoModule.init(this, this, wallet, transactionHash)
@@ -37,11 +39,11 @@ class FullTransactionInfoViewModel : ViewModel(), FullTransactionInfoModule.View
     }
 
     //
-    // View
+    // IView
     //
 
-    override fun showShareButton() {
-        showShareButton.call()
+    override fun setShareButtonVisibility(visible: Boolean) {
+        shareButtonVisibility.postValue(visible)
     }
 
     override fun showLoading() {
@@ -52,12 +54,16 @@ class FullTransactionInfoViewModel : ViewModel(), FullTransactionInfoModule.View
         loadingLiveData.value = false
     }
 
-    override fun showError(providerName: String?) {
-        showErrorLiveEvent.value = Pair(true, providerName)
+    override fun showErrorProviderOffline(providerName: String) {
+        showErrorProviderOffline.value = providerName
+    }
+
+    override fun showErrorTransactionNotFound(providerName: String) {
+        showErrorTransactionNotFound.value = providerName
     }
 
     override fun hideError() {
-        showErrorLiveEvent.value = Pair(false, null)
+        hideError.call()
     }
 
     override fun reload() {

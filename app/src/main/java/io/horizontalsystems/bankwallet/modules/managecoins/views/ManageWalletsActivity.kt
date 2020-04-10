@@ -2,104 +2,153 @@ package io.horizontalsystems.bankwallet.modules.managecoins.views
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import io.horizontalsystems.bankwallet.BaseActivity
 import io.horizontalsystems.bankwallet.R
-import io.horizontalsystems.bankwallet.core.EosUnsupportedException
 import io.horizontalsystems.bankwallet.core.utils.ModuleCode
 import io.horizontalsystems.bankwallet.core.utils.ModuleField
 import io.horizontalsystems.bankwallet.entities.AccountType
-import io.horizontalsystems.bankwallet.modules.managecoins.ManageWalletsViewModel
-import io.horizontalsystems.bankwallet.modules.restore.eos.RestoreEosModule
-import io.horizontalsystems.bankwallet.modules.restore.words.RestoreWordsModule
-import io.horizontalsystems.bankwallet.ui.dialogs.AlertDialogFragment
-import io.horizontalsystems.bankwallet.ui.dialogs.ManageWalletsDialog
-import io.horizontalsystems.bankwallet.ui.extensions.TopMenuItem
+import io.horizontalsystems.bankwallet.entities.Coin
+import io.horizontalsystems.bankwallet.entities.PredefinedAccountType
+import io.horizontalsystems.bankwallet.modules.blockchainsettings.CoinSettingsModule
+import io.horizontalsystems.bankwallet.modules.blockchainsettings.SettingsMode
+import io.horizontalsystems.bankwallet.modules.createwallet.view.CoinItemsAdapter
+import io.horizontalsystems.bankwallet.modules.managecoins.ManageWalletsModule
+import io.horizontalsystems.bankwallet.modules.managecoins.ManageWalletsPresenter
+import io.horizontalsystems.bankwallet.modules.managecoins.ManageWalletsRouter
+import io.horizontalsystems.bankwallet.modules.managecoins.ManageWalletsView
+import io.horizontalsystems.bankwallet.modules.restore.RestoreModule
+import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.android.synthetic.main.activity_manage_coins.*
 
-class ManageWalletsActivity : BaseActivity(), ManageWalletsDialog.Listener {
+class ManageWalletsActivity : BaseActivity(), ManageWalletsDialog.Listener, CoinItemsAdapter.Listener {
 
-    private lateinit var viewModel: ManageWalletsViewModel
+    private lateinit var presenter: ManageWalletsPresenter
+    private lateinit var adapter: CoinItemsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_manage_coins)
 
-        viewModel = ViewModelProviders.of(this).get(ManageWalletsViewModel::class.java)
-        viewModel.init()
+        val showCloseButton = intent?.extras?.getBoolean(ModuleField.SHOW_CLOSE_BUTTON, false) ?: false
+        val isColdStart = savedInstanceState != null
 
-        val adapter = ManageWalletsAdapter(viewModel.delegate)
+        presenter = ViewModelProvider(this, ManageWalletsModule.Factory(showCloseButton, isColdStart ))
+                .get(ManageWalletsPresenter::class.java)
+
+        presenter.onLoad()
+
+        setSupportActionBar(toolbar)
+        if (!presenter.showCloseButton) {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+
+        adapter = CoinItemsAdapter(this)
         recyclerView.adapter = adapter
 
-        shadowlessToolbar.bind(
-                title = getString(R.string.ManageCoins_title),
-                leftBtnItem = TopMenuItem(R.drawable.back, onClick = { onBackPressed() }),
-                rightBtnItem = TopMenuItem(R.drawable.checkmark_orange, onClick = { viewModel.delegate.saveChanges() })
-        )
+        observe(presenter.view as ManageWalletsView)
+        observe(presenter.router as ManageWalletsRouter)
+    }
 
-        viewModel.coinsLoadedLiveEvent.observe(this, Observer {
+    private fun observe(view: ManageWalletsView) {
+        view.coinsLiveData.observe(this, Observer { viewItems ->
+            adapter.viewItems = viewItems
             adapter.notifyDataSetChanged()
         })
 
-        viewModel.showManageKeysDialog.observe(this, Observer { (coin, predefinedAccountType) ->
+        view.showManageKeysDialog.observe(this, Observer { (coin, predefinedAccountType) ->
             ManageWalletsDialog.show(this, this, coin, predefinedAccountType)
         })
 
-        viewModel.openRestoreWordsModule.observe(this, Observer { wordsCount ->
-            RestoreWordsModule.startForResult(this, wordsCount, ModuleCode.RESTORE_WORDS)
+        view.showErrorEvent.observe(this, Observer {
+            onCancel() // will uncheck coin
         })
 
-        viewModel.openRestoreEosModule.observe(this, Observer {
-            RestoreEosModule.startForResult(this, ModuleCode.RESTORE_EOS)
+        view.showSuccessEvent.observe(this, Observer {
+            HudHelper.showSuccessMessage(R.string.Hud_Text_Done)
         })
 
-        viewModel.showErrorEvent.observe(this, Observer {
-            if (it is EosUnsupportedException) {
-                AlertDialogFragment.newInstance(
-                        R.string.Alert_TitleWarning,
-                        R.string.ManageCoins_EOSAlert_CreateButton,
-                        R.string.Alert_Ok
-                ).show(supportFragmentManager, "alert_dialog")
+    }
 
-                onCancel() // will uncheck coin
-            }
+    private fun observe(router: ManageWalletsRouter) {
+        router.openRestoreModule.observe(this, Observer { predefinedAccountType ->
+            RestoreModule.startForResult(this, predefinedAccountType, ModuleCode.RESTORE_KEY_INPUT)
         })
 
-        viewModel.closeLiveDate.observe(this, Observer {
+        router.closeLiveDate.observe(this, Observer {
             finish()
         })
+
+        router.showCoinSettings.observe(this, Observer {
+            CoinSettingsModule.startForResult(this, SettingsMode.InsideRestore)
+        })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.manage_coins_menu, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.menuClose)?.apply {
+            isVisible = presenter.showCloseButton
+        }
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menuClose ->  {
+                onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (data == null || resultCode != RESULT_OK)
-            return
-
-        val accountType = data.getParcelableExtra<AccountType>(ModuleField.ACCOUNT_TYPE)
-
         when (requestCode) {
-            ModuleCode.RESTORE_WORDS -> {
-                viewModel.delegate.onRestore(accountType, data.getParcelableExtra(ModuleField.SYNCMODE))
+            ModuleCode.COIN_SETTINGS -> {
+                presenter.onCoinSettingsClose()
             }
-            ModuleCode.RESTORE_EOS -> {
-                viewModel.delegate.onRestore(accountType)
+            ModuleCode.RESTORE_KEY_INPUT-> {
+                val accountType = data?.getParcelableExtra<AccountType>(ModuleField.ACCOUNT_TYPE) ?: return
+                presenter.didRestore(accountType)
             }
         }
+
     }
 
-    //  ManageWalletsDialog listener
+    // ManageWalletsDialog.Listener
 
-    override fun onClickCreateKey() {
-        viewModel.delegate.onClickCreateKey()
+    override fun onClickCreateKey(predefinedAccountType: PredefinedAccountType) {
+        presenter.onSelectNewAccount(predefinedAccountType)
     }
 
-    override fun onClickRestoreKey() {
-        viewModel.delegate.onClickRestoreKey()
+    override fun onClickRestoreKey(predefinedAccountType: PredefinedAccountType) {
+        presenter.onSelectRestoreAccount(predefinedAccountType)
     }
 
     override fun onCancel() {
-        viewModel.delegate.onClickCancel()
+        presenter.onClickCancel()
+    }
+
+    // CoinItemsAdapter listener
+
+    override fun enable(coin: Coin) {
+        presenter.onEnable(coin)
+    }
+
+    override fun disable(coin: Coin) {
+        presenter.onDisable(coin)
+    }
+
+    override fun select(coin: Coin) {
+        presenter.onSelect(coin)
     }
 }

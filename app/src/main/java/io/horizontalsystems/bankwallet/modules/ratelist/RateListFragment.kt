@@ -7,15 +7,15 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.core.App
-import io.horizontalsystems.bankwallet.viewHelpers.DateHelper
+import io.horizontalsystems.core.helpers.DateHelper
+import io.horizontalsystems.views.LayoutHelper
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_rates.*
 import kotlinx.android.synthetic.main.view_holder_coin_rate.*
-import java.math.BigDecimal
 import java.util.*
 
 class RatesFragment : Fragment() {
@@ -29,29 +29,40 @@ class RatesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val presenter = ViewModelProviders.of(this, RateListModule.Factory()).get(RateListPresenter::class.java)
+        val presenter = ViewModelProvider(this, RateListModule.Factory()).get(RateListPresenter::class.java)
         observeView(presenter.view)
         presenter.viewDidLoad()
 
-        adapter = CoinRatesAdapter(presenter)
+        adapter = CoinRatesAdapter()
         coinRatesRecyclerView.adapter = adapter
     }
 
     private fun observeView(view: RateListView) {
-        view.currentDate.observe(viewLifecycleOwner, Observer {
-            dateText.text = DateHelper.formatDate(Date(), "MMMM dd")
-        })
-        view.reloadLiveEvent.observe(viewLifecycleOwner, Observer {
+        view.rateListViewItem.observe(viewLifecycleOwner, Observer { rateListViewItem->
+            dateText.text = DateHelper.formatDate(rateListViewItem.currentDate, "MMM dd")
+            setLastUpdatedTime(rateListViewItem.lastUpdateTimestamp)
+
+            adapter.items = rateListViewItem.rateViewItems
             adapter.notifyDataSetChanged()
         })
+    }
+
+    private fun setLastUpdatedTime(lastUpdateTimestamp: Long?) {
+        if (lastUpdateTimestamp == null)
+            return
+
+        val time = DateHelper.getOnlyTime(Date(lastUpdateTimestamp * 1000))
+        timeAgoText.text = getString(R.string.RateList_updated, time)
     }
 }
 
 
-class CoinRatesAdapter(private val presenter: RateListPresenter) : RecyclerView.Adapter<ViewHolderCoinRate>() {
+class CoinRatesAdapter : RecyclerView.Adapter<ViewHolderCoinRate>() {
+
+    var items = listOf<RateViewItem>()
 
     override fun getItemCount(): Int {
-        return presenter.itemsCount
+        return items.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderCoinRate {
@@ -59,7 +70,7 @@ class CoinRatesAdapter(private val presenter: RateListPresenter) : RecyclerView.
     }
 
     override fun onBindViewHolder(holder: ViewHolderCoinRate, position: Int) {
-        holder.bind(presenter.getViewItem(position), position == itemCount - 1)
+        holder.bind(items[position], position == itemCount - 1)
     }
 
 }
@@ -67,30 +78,31 @@ class CoinRatesAdapter(private val presenter: RateListPresenter) : RecyclerView.
 class ViewHolderCoinRate(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
 
     fun bind(viewItem: RateViewItem, isLast: Boolean) {
-        coinIcon.bind(viewItem.coin)
-        txCoinCode.text = viewItem.coin.code
-        txCoinName.text = viewItem.coin.title
+        val coin = viewItem.coin
+        coinIcon.bind(coin.code)
+        txCoinCode.text = coin.code
+        txCoinName.text = coin.title
 
-        txValueInFiat.text = if (viewItem.loadingStatus != RateLoadingStatus.Loading) containerView.context.getString(R.string.NotAvailable) else ""
-        txValueInFiat.setTextColor(containerView.context.getColor(R.color.grey_50))
-        viewItem.rate?.let { exchangeValue ->
-            val rateString = App.numberFormatter.format(exchangeValue, trimmable = true, canUseLessSymbol = false)
-            txValueInFiat.text = rateString
-            txValueInFiat.setTextColor(ContextCompat.getColor(containerView.context, if (viewItem.rateExpired) R.color.grey_50 else R.color.grey))
+        txValueInFiat.text =  containerView.context.getString(R.string.NotAvailable)
+        LayoutHelper.getAttr(R.attr.ColorLeah, containerView.context.theme)?.let { color ->
+            txValueInFiat.setTextColor(color)
+        }
+        viewItem.rate?.let { rate ->
+            txValueInFiat.text = App.numberFormatter.formatForRates(rate, trimmable = true)
+            if (viewItem.rateExpired == true){
+                txValueInFiat.setTextColor(ContextCompat.getColor(containerView.context, R.color.grey_50))
+            }
         }
 
-        txDiff.text = "----"
-        txDiff.setTextColor(containerView.context.getColor(R.color.grey))
-        viewItem.diff?.let { diff ->
-            val diffColor = if (diff < BigDecimal.ZERO)
-                containerView.context.getColor(R.color.red_warning) else
-                containerView.context.getColor(R.color.green_crypto)
-            txDiff.text = App.numberFormatter.format(diff.toDouble(), showSign = true, precision = 2) + "%"
-            txDiff.setTextColor(diffColor)
+        val diff = viewItem.diff
+        if (viewItem.rateExpired == false && diff != null){
+            txDiff.diff = diff
+            txDiff.visibility = View.VISIBLE
+            txDiffNa.visibility = View.GONE
+        } else {
+            txDiff.visibility = View.GONE
+            txDiffNa.visibility = View.VISIBLE
         }
-        txDiff.visibility = if (viewItem.loadingStatus == RateLoadingStatus.Loading) View.GONE else View.VISIBLE
-
-        loadingSpinner.visibility = if (viewItem.loadingStatus == RateLoadingStatus.Loading) View.VISIBLE else View.GONE
 
         bottomShade.visibility = if (isLast) View.VISIBLE else View.GONE
     }

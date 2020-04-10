@@ -3,12 +3,17 @@ package io.horizontalsystems.bankwallet.modules.fulltransactioninfo
 import io.horizontalsystems.bankwallet.core.managers.TransactionDataProviderManager
 import io.horizontalsystems.bankwallet.entities.FullTransactionRecord
 import io.horizontalsystems.bankwallet.entities.Wallet
-import io.horizontalsystems.bankwallet.viewHelpers.TextHelper
+import io.horizontalsystems.bankwallet.ui.helpers.TextHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
-class FullTransactionInfoInteractor(private val transactionInfoFactory: FullTransactionInfoFactory, private var dataProviderManager: TransactionDataProviderManager, private val clipboardManager: TextHelper)
+class FullTransactionInfoInteractor(
+        private val transactionInfoFactory: FullTransactionInfoFactory,
+        private var dataProviderManager: TransactionDataProviderManager,
+        private val clipboardManager: TextHelper)
     : FullTransactionInfoModule.Interactor, FullTransactionInfoModule.ProviderDelegate {
 
     val disposables = CompositeDisposable()
@@ -34,14 +39,18 @@ class FullTransactionInfoInteractor(private val transactionInfoFactory: FullTran
     }
 
     override fun retrieveTransactionInfo(transactionHash: String) {
-        provider?.let {
-            disposables.add(it.retrieveTransactionInfo(transactionHash)
+        provider?.let { provider ->
+            disposables.add(provider.retrieveTransactionInfo(transactionHash)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        delegate?.onReceiveTransactionInfo(it)
-                    }, {
-                        delegate?.onError(provider?.providerName)
+                    .subscribe({ fullTransactionRecord ->
+                        delegate?.onReceiveTransactionInfo(fullTransactionRecord)
+                    }, { error ->
+                        when (error) {
+                            is UnknownHostException,
+                            is SocketTimeoutException -> delegate?.onProviderOffline(provider.providerName)
+                            else -> delegate?.onTransactionNotFound(provider.providerName)
+                        }
                     })
             )
         }

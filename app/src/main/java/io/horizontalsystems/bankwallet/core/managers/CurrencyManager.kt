@@ -1,9 +1,9 @@
 package io.horizontalsystems.bankwallet.core.managers
 
 import io.horizontalsystems.bankwallet.core.IAppConfigProvider
-import io.horizontalsystems.bankwallet.core.ICurrencyManager
 import io.horizontalsystems.bankwallet.core.ILocalStorage
-import io.horizontalsystems.bankwallet.entities.Currency
+import io.horizontalsystems.core.ICurrencyManager
+import io.horizontalsystems.core.entities.Currency
 import io.reactivex.subjects.PublishSubject
 
 class CurrencyManager(private val localStorage: ILocalStorage, private val appConfigProvider: IAppConfigProvider) : ICurrencyManager {
@@ -13,7 +13,7 @@ class CurrencyManager(private val localStorage: ILocalStorage, private val appCo
             val currencies = appConfigProvider.currencies
             val storedCode = localStorage.baseCurrencyCode
             return storedCode?.let { code ->
-                currencies.first { it.code == code }
+                currencies.find { it.code == code }
             } ?: currencies.first()
         }
         set(value) {

@@ -12,6 +12,8 @@ object NotificationsModule {
         fun setItems(items: List<PriceAlertViewItem>)
         fun showWarning()
         fun hideWarning()
+        fun showStateSelector(itemPosition: Int, priceAlert: PriceAlert)
+        fun setNotificationSwitch(enabled: Boolean)
     }
 
     interface IRouter {
@@ -23,13 +25,18 @@ object NotificationsModule {
         fun didSelectState(itemPosition: Int, state: PriceAlert.State)
         fun didClickOpenSettings()
         fun didClickDeactivateAll()
+        fun didTapItem(itemPosition: Int)
+        fun didSwitchAlertNotification(enabled: Boolean)
     }
 
     interface IInteractor {
         val priceAlertsEnabled: Boolean
         val priceAlerts: List<PriceAlert>
+        var notificationIsOn: Boolean
 
         fun savePriceAlerts(priceAlerts: List<PriceAlert>)
+        fun startBackgroundRateFetchWorker()
+        fun stopBackgroundRateFetchWorker()
     }
 
     interface IInteractorDelegate {
@@ -50,10 +57,11 @@ object NotificationsModule {
     }
 
     class Factory : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             val view = NotificationsView()
             val router = NotificationsRouter()
-            val interactor = NotificationsInteractor(App.priceAlertManager, App.backgroundManager, App.notificationManager)
+            val interactor = NotificationsInteractor(App.priceAlertManager, App.backgroundManager, App.localStorage, App.notificationManager, App.backgroundRateAlertScheduler)
             val presenter = NotificationsPresenter(view, router, interactor, PriceAlertViewItemFactory())
 
             interactor.delegate = presenter

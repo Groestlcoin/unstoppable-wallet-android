@@ -1,70 +1,62 @@
 package io.horizontalsystems.bankwallet.modules.balance
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ShareCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.google.android.material.appbar.AppBarLayout
 import io.horizontalsystems.bankwallet.R
-import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.modules.backup.BackupModule
-import io.horizontalsystems.bankwallet.modules.balance.BalanceModule.StatsButtonState
 import io.horizontalsystems.bankwallet.modules.main.MainActivity
 import io.horizontalsystems.bankwallet.modules.managecoins.ManageWalletsModule
 import io.horizontalsystems.bankwallet.modules.ratechart.RateChartFragment
-import io.horizontalsystems.bankwallet.ui.dialogs.BackupAlertDialog
-import io.horizontalsystems.bankwallet.ui.dialogs.BalanceSortDialogFragment
+import io.horizontalsystems.bankwallet.modules.receive.ReceiveFragment
+import io.horizontalsystems.bankwallet.modules.settings.managekeys.views.ManageKeysDialog
 import io.horizontalsystems.bankwallet.ui.extensions.NpaLinearLayoutManager
-import io.horizontalsystems.bankwallet.viewHelpers.LayoutHelper
+import io.horizontalsystems.views.LayoutHelper
 import kotlinx.android.synthetic.main.fragment_balance.*
 
-class BalanceFragment : Fragment(), BalanceCoinAdapter.Listener, BalanceSortDialogFragment.Listener {
+class BalanceFragment : Fragment(), BalanceCoinAdapter.Listener, BalanceSortDialogFragment.Listener, ReceiveFragment.Listener {
 
     private lateinit var viewModel: BalanceViewModel
-    private lateinit var coinAdapter: BalanceCoinAdapter
+    private val coinAdapter = BalanceCoinAdapter(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_balance, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this).get(BalanceViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(BalanceViewModel::class.java)
         viewModel.init()
-        coinAdapter = BalanceCoinAdapter(this, viewModel.delegate)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        (activity as? AppCompatActivity)?.setSupportActionBar(toolbar)
 
         recyclerCoins.adapter = coinAdapter
         recyclerCoins.layoutManager = NpaLinearLayoutManager(context)
         (recyclerCoins.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
-        sortButton.isActivated = true
         sortButton.setOnClickListener {
             viewModel.delegate.onSortClick()
         }
 
-        switchChartButton.setOnClickListener {
-            viewModel.delegate.onChartClick()
-        }
-
         pullToRefresh.setOnRefreshListener {
-            viewModel.delegate.refresh()
+            viewModel.delegate.onRefresh()
         }
 
         observeLiveData()
         setSwipeBackground()
-        setAppBarAnimation()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        coinAdapter.notifyDataSetChanged()
     }
 
     override fun onDestroyView() {
@@ -75,7 +67,7 @@ class BalanceFragment : Fragment(), BalanceCoinAdapter.Listener, BalanceSortDial
     // BalanceSort listener
 
     override fun onSortItemSelect(sortType: BalanceSortType) {
-        viewModel.delegate.onSortTypeChanged(sortType)
+        viewModel.delegate.onSortTypeChange(sortType)
     }
 
     private fun setSwipeBackground() {
@@ -89,54 +81,50 @@ class BalanceFragment : Fragment(), BalanceCoinAdapter.Listener, BalanceSortDial
         }
     }
 
-    private fun setAppBarAnimation() {
-        toolbarTitle.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                toolbarTitle.pivotX = 0f
-                toolbarTitle.pivotY = toolbarTitle.bottom.toFloat()
-                toolbarTitle.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
-
-        appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
-            val fraction = Math.abs(verticalOffset).toFloat() / appBarLayout.totalScrollRange
-            var alphaFract = 1f - fraction
-            if (alphaFract < 0.20) {
-                alphaFract = 0f
-            }
-            toolbarTitle.alpha = alphaFract
-            toolbarTitle.scaleX = (1f - fraction / 3)
-            toolbarTitle.scaleY = (1f - fraction / 3)
-        })
+    // ReceiveFragment listener
+    override fun shareReceiveAddress(address: String) {
+        activity?.let {
+            ShareCompat.IntentBuilder
+                .from(it)
+                .setType("text/plain")
+                .setText(address)
+                .startChooser()
+        }
     }
 
     // BalanceAdapter listener
 
-    override fun onSendClicked(position: Int) {
-        viewModel.onSendClicked(position)
+    override fun onSendClicked(viewItem: BalanceViewItem) {
+        viewModel.delegate.onPay(viewItem)
     }
 
-    override fun onReceiveClicked(position: Int) {
-        viewModel.onReceiveClicked(position)
+    override fun onReceiveClicked(viewItem: BalanceViewItem) {
+        viewModel.delegate.onReceive(viewItem)
     }
 
-    override fun onItemClick(position: Int) {
-        coinAdapter.toggleViewHolder(position)
+    override fun onItemClicked(viewItem: BalanceViewItem) {
+        viewModel.delegate.onItem(viewItem)
     }
 
-    override fun onAddCoinClick() {
-        viewModel.delegate.openManageCoins()
+    override fun onChartClicked(viewItem: BalanceViewItem) {
+        viewModel.delegate.onChart(viewItem)
     }
 
-    override fun onClickChart(position: Int) {
-        viewModel.delegate.openChart(position)
+    override fun onAddCoinClicked() {
+        viewModel.delegate.onAddCoinClick()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        if (childFragment is ReceiveFragment) {
+            childFragment.setListener(this)
+        }
     }
 
     // LiveData
 
     private fun observeLiveData() {
-        viewModel.openReceiveDialog.observe(viewLifecycleOwner, Observer {
-            (activity as? MainActivity)?.openReceiveDialog(it)
+        viewModel.openReceiveDialog.observe(viewLifecycleOwner, Observer { wallet ->
+            ReceiveFragment.newInstance(wallet).show(childFragmentManager, "ReceiveFragment")
         })
 
         viewModel.openSendDialog.observe(viewLifecycleOwner, Observer {
@@ -144,44 +132,39 @@ class BalanceFragment : Fragment(), BalanceCoinAdapter.Listener, BalanceSortDial
         })
 
         viewModel.didRefreshLiveEvent.observe(viewLifecycleOwner, Observer {
-            pullToRefresh.isRefreshing = false
+            Handler().postDelayed({ pullToRefresh.isRefreshing = false }, 1000)
         })
 
         viewModel.openManageCoinsLiveEvent.observe(viewLifecycleOwner, Observer {
-            context?.let { ManageWalletsModule.start(it) }
+            context?.let { ManageWalletsModule.start(it, true) }
         })
 
-        viewModel.reloadLiveEvent.observe(viewLifecycleOwner, Observer {
-            coinAdapter.notifyDataSetChanged()
-            reloadHeader()
-            if (viewModel.delegate.itemsCount > 0) {
-                recyclerCoins.animate().alpha(1f)
-            }
+        viewModel.setViewItems.observe(viewLifecycleOwner, Observer {
+            coinAdapter.setItems(it)
         })
 
-        viewModel.reloadHeaderLiveEvent.observe(viewLifecycleOwner, Observer {
-            reloadHeader()
-        })
-
-        viewModel.reloadItemLiveEvent.observe(viewLifecycleOwner, Observer { position ->
-            coinAdapter.notifyItemChanged(position)
+        viewModel.setHeaderViewItem.observe(viewLifecycleOwner, Observer {
+            setHeaderViewItem(it)
         })
 
         viewModel.openSortingTypeDialogLiveEvent.observe(viewLifecycleOwner, Observer { sortingType ->
             BalanceSortDialogFragment.newInstance(this, sortingType).also { it.show(childFragmentManager, it.tag) }
         })
 
-        viewModel.setSortingOnLiveEvent.observe(viewLifecycleOwner, Observer { visible ->
+        viewModel.isSortOn.observe(viewLifecycleOwner, Observer { visible ->
             sortButton.visibility = if (visible) View.VISIBLE else View.GONE
         })
 
-        viewModel.showBackupAlert.observe(viewLifecycleOwner, Observer {
+        viewModel.showBackupAlert.observe(viewLifecycleOwner, Observer { (coin, predefinedAccount) ->
             activity?.let { activity ->
-                BackupAlertDialog.show(activity, getString(it.second.title), it.first.title, object : BackupAlertDialog.Listener {
-                    override fun onBackupButtonClick() {
-                        viewModel.delegate.openBackup()
+                val title = getString(R.string.ManageKeys_Delete_Alert_Title)
+                val subtitle = getString(predefinedAccount.title)
+                val description = getString(R.string.Balance_Backup_Alert, getString(predefinedAccount.title), coin.title)
+                ManageKeysDialog.show(title, subtitle, description, activity, object : ManageKeysDialog.Listener {
+                    override fun onClickBackupKey() {
+                        viewModel.delegate.onBackupClick()
                     }
-                })
+                }, ManageKeysDialog.ManageAction.BACKUP)
             }
         })
 
@@ -190,38 +173,15 @@ class BalanceFragment : Fragment(), BalanceCoinAdapter.Listener, BalanceSortDial
         })
 
         viewModel.openChartModule.observe(viewLifecycleOwner, Observer { coin ->
-            RateChartFragment(coin).also { it.show(childFragmentManager, it.tag) }
+            RateChartFragment.newInstance(coin).show(childFragmentManager, "RateChartFragment")
         })
 
-        viewModel.setStatsButtonState.observe(viewLifecycleOwner, Observer { statsButtonState ->
-            when (statsButtonState) {
-                StatsButtonState.NORMAL -> {
-                    switchChartButton.visibility = View.VISIBLE
-
-                    switchChartButton.isActivated = false
-                }
-                StatsButtonState.HIDDEN -> {
-                    switchChartButton.visibility = View.GONE
-                }
-                StatsButtonState.SELECTED -> {
-                    switchChartButton.visibility = View.VISIBLE
-
-                    switchChartButton.isActivated = true
-                }
-            }
-        })
     }
 
-    private fun reloadHeader() {
-        val headerViewItem = viewModel.delegate.getHeaderViewItem()
-
-        context?.let {
-            val color = if (headerViewItem.upToDate) R.color.yellow_crypto else R.color.yellow_crypto_40
-            balanceText.setTextColor(ContextCompat.getColor(it, color))
-        }
-
-        balanceText.text = headerViewItem.currencyValue?.let {
-            App.numberFormatter.format(it)
+    private fun setHeaderViewItem(headerViewItem: BalanceHeaderViewItem) {
+        headerViewItem.apply {
+            balanceText.text = xBalanceText
+            balanceText.setTextColor(xBalanceTextColor)
         }
     }
 }

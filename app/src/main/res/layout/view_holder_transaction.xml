@@ -25,6 +25,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_incoming" />
 
+    <ImageView
+        android:id="@+id/doubleSpendIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:src="@drawable/ic_doublespend"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/txStatusWithTimeView"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <TextView
         android:id="@+id/txDate"
         style="@style/Headline2"
@@ -32,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:textAllCaps="true"
-        android:textColor="?TransactionDateColor"
+        android:textColor="?TextColorGreyLightToDark"
         app:layout_constraintStart_toEndOf="@+id/directionIcon"
         app:layout_constraintTop_toTopOf="@+id/directionIcon"
         tools:text="Jun 3" />
@@ -47,16 +57,33 @@
         app:layout_constraintStart_toStartOf="@+id/txDate"
         app:layout_constraintTop_toBottomOf="@+id/txDate" />
 
-    <TextView
-        android:id="@+id/txValueInFiat"
-        style="@style/Title3"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
-        android:textColor="@color/green_crypto"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txDate"
-        tools:text="$400" />
+        app:layout_constraintTop_toTopOf="@+id/txDate">
+
+        <TextView
+            android:id="@+id/txValueInFiat"
+            style="@style/Title3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_lock"
+            android:drawablePadding="4dp"
+            android:textColor="?ColorRemus"
+            tools:text="$400" />
+
+        <ImageView
+            android:id="@+id/sentToSelfIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/ic_incoming"
+            android:tint="?ColorRemus" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txValueInCoin"
@@ -74,21 +101,10 @@
         android:id="@+id/bottomShade"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="?SettingsSectionBottomShadeColor"
+        android:background="@color/steel_20"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <View
-        android:id="@+id/pendingShade"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="?PendingTransactionShadeColor"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

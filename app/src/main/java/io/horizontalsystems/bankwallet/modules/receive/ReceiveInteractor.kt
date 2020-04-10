@@ -8,13 +8,15 @@ import io.horizontalsystems.bankwallet.modules.receive.viewitems.AddressItem
 class ReceiveInteractor(
         private var wallet: Wallet,
         private var adapterManager: IAdapterManager,
-        private var clipboardManager: IClipboardManager) : ReceiveModule.IInteractor {
+        private var clipboardManager: IClipboardManager
+) : ReceiveModule.IInteractor {
 
     var delegate: ReceiveModule.IInteractorDelegate? = null
 
     override fun getReceiveAddress() {
         adapterManager.getReceiveAdapterForWallet(wallet)?.let { adapter ->
-            val addressItem = AddressItem(adapter.receiveAddress, wallet.coin)
+            val addressItem = AddressItem(adapter.receiveAddress,
+                                          adapter.getReceiveAddressType(wallet), wallet.coin)
             delegate?.didReceiveAddress(addressItem)
         }
     }

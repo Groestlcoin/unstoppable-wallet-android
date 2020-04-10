@@ -1,50 +1,50 @@
 package io.horizontalsystems.bankwallet.modules.restore
 
-import io.horizontalsystems.bankwallet.core.IPredefinedAccountType
+import androidx.lifecycle.ViewModel
 import io.horizontalsystems.bankwallet.core.IPredefinedAccountTypeManager
-import io.horizontalsystems.bankwallet.entities.*
+import io.horizontalsystems.bankwallet.entities.AccountType
+import io.horizontalsystems.bankwallet.entities.PredefinedAccountType
 
 class RestorePresenter(
-        private val router: RestoreModule.Router,
-        private val interactor: RestoreModule.Interactor,
+        val view: RestoreModule.IView,
+        val router: RestoreModule.IRouter,
         private val predefinedAccountTypeManager: IPredefinedAccountTypeManager)
-    : RestoreModule.ViewDelegate, RestoreModule.InteractorDelegate {
+    : ViewModel(), RestoreModule.ViewDelegate {
 
-    var view: RestoreModule.View? = null
+    private var accountType: AccountType? = null
+    private var predefinedAccountType: PredefinedAccountType? = null
 
-    //  View Delegate
+    override var items = listOf<PredefinedAccountType>()
 
-    override var items = listOf<IPredefinedAccountType>()
-
-    override fun viewDidLoad() {
+    override fun onLoad() {
         items = predefinedAccountTypeManager.allTypes
-        view?.reload(items)
+        view.reload(items)
     }
 
-    override fun onSelect(accountType: IPredefinedAccountType) {
-        when (accountType) {
-            is UnstoppableAccountType ->
-                router.startRestoreWordsModule(12)
-            is BinanceAccountType -> {
-                router.startRestoreWordsModule(24)
-            }
-            is EosAccountType -> {
-                router.startRestoreEosModule()
+    override fun onSelect(predefinedAccountType: PredefinedAccountType) {
+        this.predefinedAccountType = predefinedAccountType
+        router.showKeyInput(predefinedAccountType)
+    }
+
+    override fun didEnterValidAccount(accountType: AccountType) {
+        this.accountType = accountType
+        if (predefinedAccountType == PredefinedAccountType.Standard) {
+            router.showCoinSettings()
+        } else {
+            predefinedAccountType?.let { router.showRestoreCoins(it, accountType) }
+        }
+    }
+
+    override fun didReturnFromCoinSettings() {
+        predefinedAccountType?.let {
+            accountType?.let { accountType ->
+                router.showRestoreCoins(it, accountType)
             }
         }
     }
 
-    override fun onRestore(accountType: AccountType, syncMode: SyncMode?) {
-        interactor.restore(accountType, syncMode)
+    override fun onClickClose() {
+        router.close()
     }
 
-    // Interactor Delegate
-
-    override fun didRestore() {
-        router.startMainModule()
-    }
-
-    override fun didFailRestore(e: Exception) {
-        view?.showError(e)
-    }
 }

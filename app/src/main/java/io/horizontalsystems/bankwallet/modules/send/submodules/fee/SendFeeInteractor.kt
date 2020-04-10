@@ -1,36 +1,57 @@
 package io.horizontalsystems.bankwallet.modules.send.submodules.fee
 
-import io.horizontalsystems.bankwallet.core.ICurrencyManager
 import io.horizontalsystems.bankwallet.core.IFeeRateProvider
-import io.horizontalsystems.bankwallet.core.IRateStorage
-import io.horizontalsystems.bankwallet.entities.FeeRateInfo
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.horizontalsystems.bankwallet.core.IRateManager
+import io.horizontalsystems.bankwallet.entities.Coin
+import io.horizontalsystems.core.entities.Currency
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.math.BigDecimal
 
-class SendFeeInteractor(private val rateStorage: IRateStorage,
-                        private val feeRateProvider: IFeeRateProvider?,
-                        private val currencyManager: ICurrencyManager) : SendFeeModule.IInteractor {
-
-    private var disposable: Disposable? = null
+class SendFeeInteractor(
+        private val baseCurrency: Currency,
+        private val rateManager: IRateManager,
+        private val feeRateProvider: IFeeRateProvider?,
+        private val coin: Coin)
+    : SendFeeModule.IInteractor {
 
     var delegate: SendFeeModule.IInteractorDelegate? = null
+    private val disposables = CompositeDisposable()
 
-    override fun getRate(coinCode: String) {
-        disposable = rateStorage.latestRateObservable(coinCode, currencyManager.baseCurrency.code)
+    init {
+        rateManager.marketInfoObservable(coin.code, baseCurrency.code)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    delegate?.onRateFetched(if (it.expired) null else it)
+                .observeOn(Schedulers.io())
+                .subscribe { marketInfo ->
+                    delegate?.didUpdateExchangeRate(marketInfo.rate)
+                }
+                .let {
+                    disposables.add(it)
                 }
     }
 
-    override fun getFeeRates(): List<FeeRateInfo>? {
-        return feeRateProvider?.feeRates()
+    override fun getRate(coinCode: String): BigDecimal? {
+        return rateManager.getLatestRate(coinCode, baseCurrency.code)
     }
 
-    override fun clear() {
-        disposable?.dispose()
+    override fun syncFeeRate() {
+        if (feeRateProvider == null)
+            return
+
+        feeRateProvider.feeRates()
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({
+                                   delegate?.didUpdate(it)
+                               },
+                               {
+                                   delegate?.didReceiveError(it as Exception)
+                               })
+                    .let { disposables.add(it) }
     }
 
+    override fun onClear() {
+        disposables.dispose()
+    }
 }
+
+

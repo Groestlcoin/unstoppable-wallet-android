@@ -4,13 +4,11 @@ import io.horizontalsystems.bankwallet.core.AdapterState
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.ISendDashAdapter
 import io.horizontalsystems.bankwallet.core.UnsupportedAccountException
-import io.horizontalsystems.bankwallet.entities.AccountType
-import io.horizontalsystems.bankwallet.entities.SyncMode
-import io.horizontalsystems.bankwallet.entities.TransactionRecord
-import io.horizontalsystems.bankwallet.entities.Wallet
-import io.horizontalsystems.bankwallet.viewHelpers.DateHelper
+import io.horizontalsystems.bankwallet.entities.*
 import io.horizontalsystems.bitcoincore.BitcoinCore
+import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.BlockInfo
+import io.horizontalsystems.core.helpers.DateHelper
 import io.horizontalsystems.dashkit.DashKit
 import io.horizontalsystems.dashkit.DashKit.NetworkType
 import io.horizontalsystems.dashkit.models.DashTransactionInfo
@@ -38,12 +36,12 @@ class DashAdapter(override val kit: DashKit) :
     // DashKit Listener
     //
 
-    override fun onBalanceUpdate(balance: Long) {
+    override fun onBalanceUpdate(balance: BalanceInfo) {
         balanceUpdatedSubject.onNext(Unit)
     }
 
     override fun onLastBlockInfoUpdate(blockInfo: BlockInfo) {
-        lastBlockHeightUpdatedSubject.onNext(Unit)
+        lastBlockUpdatedSubject.onNext(Unit)
     }
 
     override fun onKitStateUpdate(state: BitcoinCore.KitState) {
@@ -94,22 +92,26 @@ class DashAdapter(override val kit: DashKit) :
         // ignored for now
     }
 
-    override fun getTransactions(from: Pair<String, Int>?, limit: Int): Single<List<TransactionRecord>> {
-        return kit.transactions(from?.first, limit).map { it.map { tx -> transactionRecord(tx) } }
+    override fun getTransactions(from: TransactionRecord?, limit: Int): Single<List<TransactionRecord>> {
+        return kit.transactions(from?.uid, limit).map { it.map { tx -> transactionRecord(tx) } }
     }
 
     // ISendDashAdapter
 
     override fun availableBalance(address: String?): BigDecimal {
-        return availableBalance(feeRate, address)
+        return availableBalance(feeRate, address, mapOf())
     }
 
     override fun fee(amount: BigDecimal, address: String?): BigDecimal {
-        return fee(amount, feeRate, address)
+        return fee(amount, feeRate, address, mapOf())
+    }
+
+    override fun validate(address: String) {
+        validate(address, mapOf())
     }
 
     override fun send(amount: BigDecimal, address: String): Single<Unit> {
-        return send(amount, address, feeRate)
+        return send(amount, address, feeRate, mapOf())
     }
 
     companion object {
@@ -121,13 +123,15 @@ class DashAdapter(override val kit: DashKit) :
 
         private fun createKit(wallet: Wallet, testMode: Boolean): DashKit {
             val account = wallet.account
-            if (account.type is AccountType.Mnemonic) {
+            val accountType = account.type
+            val syncMode = wallet.settings[CoinSetting.SyncMode]?.let { SyncMode.valueOf(it) }
+            if (accountType is AccountType.Mnemonic && accountType.words.size == 12) {
                 return DashKit(context = App.instance,
-                        words = account.type.words,
-                        walletId = account.id,
-                        syncMode = SyncMode.fromSyncMode(account.defaultSyncMode),
-                        networkType = getNetworkType(testMode),
-                        confirmationsThreshold = defaultConfirmationsThreshold)
+                            words = accountType.words,
+                            walletId = account.id,
+                            syncMode = getSyncMode(syncMode),
+                            networkType = getNetworkType(testMode),
+                            confirmationsThreshold = defaultConfirmationsThreshold)
             }
 
             throw UnsupportedAccountException()

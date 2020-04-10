@@ -1,89 +1,88 @@
 package io.horizontalsystems.bankwallet.modules.settings.managekeys
 
-import io.horizontalsystems.bankwallet.core.IPredefinedAccountType
-import io.horizontalsystems.bankwallet.entities.*
+import androidx.lifecycle.ViewModel
+import io.horizontalsystems.bankwallet.entities.AccountType
+import io.horizontalsystems.bankwallet.entities.PredefinedAccountType
 
-class ManageKeysPresenter(private val interactor: ManageKeysModule.Interactor, private val router: ManageKeysModule.Router)
-    : ManageKeysModule.ViewDelegate, ManageKeysModule.InteractorDelegate {
+class ManageKeysPresenter(
+         val view: ManageKeysModule.IView,
+         val router: ManageKeysModule.IRouter,
+        private val interactor: ManageKeysModule.Interactor)
+    : ViewModel(), ManageKeysModule.ViewDelegate, ManageKeysModule.InteractorDelegate {
 
-    var view: ManageKeysModule.View? = null
+    private var currentItemForUnlink: ManageAccountItem? = null
 
-    private var currentItem: ManageAccountItem? = null
+    private var accountType: AccountType? = null
+    private var predefinedAccountType: PredefinedAccountType? = null
 
-    //  ViewDelegate
+    var items = listOf<ManageAccountItem>()
 
-    override var items = listOf<ManageAccountItem>()
-
-    override fun viewDidLoad() {
+    override fun onLoad() {
         interactor.loadAccounts()
     }
 
-    override fun onClickNew(accountItem: ManageAccountItem) {
-        currentItem = accountItem
-        view?.showCreateConfirmation(accountItem)
+    override fun didEnterValidAccount(accountType: AccountType) {
+        val predefinedAccountType = predefinedAccountType ?: return
+        this.accountType = accountType
+
+        if (predefinedAccountType == PredefinedAccountType.Standard) {
+            router.showCoinSettings()
+        } else {
+            router.showCoinManager(predefinedAccountType, accountType)
+        }
+    }
+
+    override fun didReturnFromCoinSettings() {
+        val predefinedAccountType = predefinedAccountType ?: return
+        val accountType = this.accountType ?: return
+
+        router.showCoinManager(predefinedAccountType, accountType)
+    }
+
+    override fun onClickCreate(accountItem: ManageAccountItem) {
+        router.showCreateWallet(accountItem.predefinedAccountType)
     }
 
     override fun onClickBackup(accountItem: ManageAccountItem) {
-        router.startBackupModule(accountItem)
+        val account = accountItem.account ?: return
+        router.showBackup(account, accountItem.predefinedAccountType)
     }
 
-    override fun onClickRestore(accountType: IPredefinedAccountType) {
-        when (accountType) {
-            is UnstoppableAccountType -> {
-                router.startRestoreWords(12)
-            }
-            is BinanceAccountType -> {
-                router.startRestoreWords(24)
-            }
-            is EosAccountType -> {
-                router.startRestoreEos()
-            }
-        }
+    override fun onClickRestore(accountItem: ManageAccountItem) {
+        predefinedAccountType = accountItem.predefinedAccountType
+        router.showRestoreKeyInput(accountItem.predefinedAccountType)
     }
 
     override fun onClickUnlink(accountItem: ManageAccountItem) {
-        currentItem = accountItem
+        currentItemForUnlink = accountItem
 
         if (accountItem.account?.isBackedUp == true) {
-            view?.showUnlinkConfirmation(accountItem)
+            view.showUnlinkConfirmation(accountItem)
         } else {
-            view?.showBackupConfirmation(accountItem)
-        }
-    }
-
-    override fun onClickShow(accountItem: ManageAccountItem) {
-        router.startBackupModule(accountItem)
-    }
-
-    override fun onConfirmCreate() {
-        try {
-            currentItem?.let { interactor.createAccount(it.predefinedAccountType) }
-            view?.showSuccess()
-        } catch (e: Exception) {
-            view?.showError(e)
+            view.showBackupConfirmation(accountItem)
         }
     }
 
     override fun onConfirmBackup() {
-        currentItem?.let { router.startBackupModule(it) }
+        currentItemForUnlink?.let {
+            val account = it.account ?: return
+            router.showBackup(account, it.predefinedAccountType)
+        }
     }
 
     override fun onConfirmUnlink(accountId: String) {
         interactor.deleteAccount(accountId)
     }
 
-    override fun onConfirmRestore(accountType: AccountType, syncMode: SyncMode?) {
-        interactor.restoreAccount(accountType, syncMode)
-    }
-
     override fun onClear() {
         interactor.clear()
     }
 
-    //  InteractorDelegate
+    //  IInteractorDelegate
 
     override fun didLoad(accounts: List<ManageAccountItem>) {
         items = accounts
-        view?.show(items)
+        view.show(items)
     }
+
 }

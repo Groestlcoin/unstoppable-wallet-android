@@ -4,18 +4,16 @@ import io.horizontalsystems.bankwallet.core.AdapterState
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.ISendBitcoinAdapter
 import io.horizontalsystems.bankwallet.core.UnsupportedAccountException
-import io.horizontalsystems.bankwallet.entities.AccountType
+import io.horizontalsystems.bankwallet.entities.*
 import io.horizontalsystems.bankwallet.entities.AccountType.Derivation
-import io.horizontalsystems.bankwallet.entities.SyncMode
-import io.horizontalsystems.bankwallet.entities.TransactionRecord
-import io.horizontalsystems.bankwallet.entities.Wallet
-import io.horizontalsystems.bankwallet.viewHelpers.DateHelper
 import io.horizontalsystems.bitcoincore.BitcoinCore
 import io.horizontalsystems.bitcoincore.core.Bip
+import io.horizontalsystems.bitcoincore.models.BalanceInfo
 import io.horizontalsystems.bitcoincore.models.BlockInfo
 import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoinkit.BitcoinKit
 import io.horizontalsystems.bitcoinkit.BitcoinKit.NetworkType
+import io.horizontalsystems.core.helpers.DateHelper
 import io.reactivex.Single
 import java.math.BigDecimal
 import java.util.*
@@ -35,16 +33,23 @@ class BitcoinAdapter(override val kit: BitcoinKit)
 
     override val satoshisInBitcoin: BigDecimal = BigDecimal.valueOf(Math.pow(10.0, decimal.toDouble()))
 
+    override fun getReceiveAddressType(wallet: Wallet): String? {
+        val walletDerivation = wallet.settings[CoinSetting.Derivation]?.let {
+            Derivation.valueOf(it)
+        }
+        return walletDerivation?.addressType
+    }
+
     //
     // BitcoinKit Listener
     //
 
-    override fun onBalanceUpdate(balance: Long) {
+    override fun onBalanceUpdate(balance: BalanceInfo) {
         balanceUpdatedSubject.onNext(Unit)
     }
 
     override fun onLastBlockInfoUpdate(blockInfo: BlockInfo) {
-        lastBlockHeightUpdatedSubject.onNext(Unit)
+        lastBlockUpdatedSubject.onNext(Unit)
     }
 
     override fun onKitStateUpdate(state: BitcoinCore.KitState) {
@@ -95,8 +100,8 @@ class BitcoinAdapter(override val kit: BitcoinKit)
         // ignored for now
     }
 
-    override fun getTransactions(from: Pair<String, Int>?, limit: Int): Single<List<TransactionRecord>> {
-        return kit.transactions(from?.first, limit).map { it.map { tx -> transactionRecord(tx) } }
+    override fun getTransactions(from: TransactionRecord?, limit: Int): Single<List<TransactionRecord>> {
+        return kit.transactions(from?.uid, limit).map { it.map { tx -> transactionRecord(tx) } }
     }
 
     companion object {
@@ -104,23 +109,25 @@ class BitcoinAdapter(override val kit: BitcoinKit)
         private fun getNetworkType(testMode: Boolean) =
                 if (testMode) NetworkType.TestNet else NetworkType.MainNet
 
-        private fun getBip(derivation: Derivation): Bip = when (derivation) {
-            Derivation.bip44 -> Bip.BIP44
+        private fun getBip(derivation: Derivation?): Bip = when (derivation) {
             Derivation.bip49 -> Bip.BIP49
             Derivation.bip84 -> Bip.BIP84
+            else -> Bip.BIP44
         }
 
         private fun createKit(wallet: Wallet, testMode: Boolean): BitcoinKit {
             val account = wallet.account
             val accountType = account.type
-            if (accountType is AccountType.Mnemonic) {
+            val walletDerivation = wallet.settings[CoinSetting.Derivation]?.let { Derivation.valueOf(it) }
+            val syncMode = wallet.settings[CoinSetting.SyncMode]?.let { SyncMode.valueOf(it) }
+            if (accountType is AccountType.Mnemonic && accountType.words.size == 12) {
                 return BitcoinKit(context = App.instance,
                         words = accountType.words,
                         walletId = account.id,
-                        syncMode = SyncMode.fromSyncMode(account.defaultSyncMode),
+                        syncMode = getSyncMode(syncMode),
                         networkType = getNetworkType(testMode),
                         confirmationsThreshold = defaultConfirmationsThreshold,
-                        bip = getBip(accountType.derivation))
+                        bip = getBip(walletDerivation))
             }
 
             throw UnsupportedAccountException()

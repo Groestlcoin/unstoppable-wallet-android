@@ -5,157 +5,81 @@
     android:id="@+id/viewHolderRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="1dp"
-    android:background="?ManageKeyBackground"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical">
 
-    <!-- First line-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/steel_20" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp">
+        android:background="@drawable/clickable_background_color_lawrence"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
         <ImageView
-            android:id="@+id/keyIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="@color/grey"
-            android:indeterminateTintMode="src_atop"
-            android:src="@drawable/ic_manage_keys"
-            android:tint="@color/deemable_yellow_crypto"
+            android:id="@+id/headerIcon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_wallet"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/accountName"
+            android:id="@+id/titleText"
             style="@style/Headline2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textColor="?TextDeemable"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/keyIcon"
+            android:layout_width="0dp"
+            android:layout_height="23dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
+            android:textColor="?TransactionDetailValueTextColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/headerIcon"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Bitcoin" />
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- Second line-->
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="23dp"
-        android:layout_marginStart="37dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp">
+            tools:text="Title" />
 
         <TextView
-            android:id="@+id/accountCoins"
+            android:id="@+id/subtitleText"
             style="@style/Subhead2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textColor="@color/deemable_grey"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/grey"
+            app:layout_constraintLeft_toLeftOf="@id/titleText"
+            app:layout_constraintTop_toBottomOf="@id/titleText"
             tools:text="BTC, BCH, DASH, GRS, ETH, ERC-20" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Actions -->
-
-    <LinearLayout
-        android:id="@+id/buttonsWrapper"
+    <io.horizontalsystems.views.ManageAccountView
+        android:id="@+id/backupButton"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal"
-        android:visibility="visible">
+        android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/buttonNew"
-            style="@style/SendButtonSmallGrey"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="32dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="@string/ManageKeys_Create" />
+    <io.horizontalsystems.views.ManageAccountView
+        android:id="@+id/createButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/buttonImport"
-            style="@style/SendButtonSmallGrey"
-            android:layout_width="0dp"
-            android:minHeight="32dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="@string/ManageKeys_Restore"
-            android:visibility="gone" />
+    <io.horizontalsystems.views.ManageAccountView
+        android:id="@+id/restoreButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/buttonUnlink"
-            style="@style/SendButtonSmallGrey"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:minHeight="32dp"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="@string/ManageKeys_Delete"
-            android:visibility="gone" />
+    <io.horizontalsystems.views.ManageAccountView
+        android:id="@+id/unlinkButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/buttonShow"
-            style="@style/SendButtonSmallGrey"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="32dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="@string/ManageKeys_Show"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/buttonBackup"
-            style="@style/SendButtonSmallGrey"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:minHeight="32dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:maxWidth="16dp"
-                android:src="@drawable/ic_attention"
-                android:tint="@color/red_warning" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/noto_sans_medium"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
-                android:textAlignment="center"
-                android:text="@string/ManageKeys_Backup"
-                android:textColor="@color/stateful_button_text_color"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/steel_20" />
 
 </LinearLayout>

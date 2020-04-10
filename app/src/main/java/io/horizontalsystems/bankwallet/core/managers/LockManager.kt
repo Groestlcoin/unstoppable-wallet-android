@@ -2,23 +2,16 @@ package io.horizontalsystems.bankwallet.core.managers
 
 import android.app.Activity
 import io.horizontalsystems.bankwallet.core.App
-import io.horizontalsystems.bankwallet.core.ILockManager
-import io.horizontalsystems.bankwallet.core.IPinManager
-import io.horizontalsystems.bankwallet.viewHelpers.DateHelper
-import io.reactivex.subjects.PublishSubject
+import io.horizontalsystems.core.ILockManager
+import io.horizontalsystems.core.IPinManager
+import io.horizontalsystems.core.helpers.DateHelper
 import java.util.*
 
 class LockManager(private val pinManager: IPinManager) : ILockManager, BackgroundManager.Listener {
 
     private val lockTimeout: Double = 60.0
 
-    override val lockStateUpdatedSignal: PublishSubject<Unit> = PublishSubject.create()
-
     override var isLocked: Boolean = false
-        set(value) {
-            field = value
-            lockStateUpdatedSignal.onNext(Unit)
-        }
 
     override fun didEnterBackground() {
         if (isLocked) {

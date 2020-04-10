@@ -1,12 +1,14 @@
 package io.horizontalsystems.bankwallet.modules.send.submodules.fee
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import io.horizontalsystems.bankwallet.core.App
 import io.horizontalsystems.bankwallet.core.FeeRatePriority
 import io.horizontalsystems.bankwallet.core.factories.FeeRateProviderFactory
 import io.horizontalsystems.bankwallet.entities.Coin
 import io.horizontalsystems.bankwallet.entities.CoinValue
 import io.horizontalsystems.bankwallet.entities.FeeRateInfo
-import io.horizontalsystems.bankwallet.entities.Rate
+import io.horizontalsystems.bankwallet.entities.FeeState
 import io.horizontalsystems.bankwallet.modules.send.SendModule
 import io.horizontalsystems.bankwallet.modules.send.SendModule.AmountInfo
 import java.math.BigDecimal
@@ -14,7 +16,8 @@ import java.math.BigDecimal
 
 object SendFeeModule {
 
-    class InsufficientFeeBalance(val coin: Coin, val coinProtocol: String, val feeCoin: Coin, val fee: CoinValue) : Exception()
+    class InsufficientFeeBalance(val coin: Coin, val coinProtocol: String, val feeCoin: Coin, val fee: CoinValue) :
+            Exception()
 
     interface IView {
         fun setPrimaryFee(feeAmount: String?)
@@ -23,61 +26,79 @@ object SendFeeModule {
         fun setDuration(duration: Long)
         fun setFeePriority(priority: FeeRatePriority)
         fun showFeeRatePrioritySelector(feeRates: List<FeeRateInfoViewItem>)
+
+        fun setLoading(loading: Boolean)
+        fun setFee(fee: AmountInfo, convertedFee: AmountInfo?)
+        fun setError(error: Exception?)
+
     }
 
     interface IViewDelegate {
         fun onViewDidLoad()
         fun onChangeFeeRate(feeRateInfo: FeeRateInfo)
         fun onClickFeeRatePriority()
-        fun onClear()
     }
 
     interface IInteractor {
-        fun getRate(coinCode: String)
-        fun getFeeRates(): List<FeeRateInfo>?
-        fun clear()
+        fun getRate(coinCode: String): BigDecimal?
+        fun syncFeeRate()
+        fun onClear()
     }
 
     interface IInteractorDelegate {
-        fun onRateFetched(latestRate: Rate?)
+        fun didUpdate(feeRates: List<FeeRateInfo>)
+        fun didReceiveError(error: Exception)
+        fun didUpdateExchangeRate(rate: BigDecimal)
     }
 
     interface IFeeModule {
         val isValid: Boolean
+        val feeRateState: FeeState
         val feeRate: Long
         val primaryAmountInfo: AmountInfo
         val secondaryAmountInfo: AmountInfo?
         val duration: Long?
 
+        fun setLoading(loading: Boolean)
         fun setFee(fee: BigDecimal)
+        fun setError(externalError: Exception?)
         fun setAvailableFeeBalance(availableFeeBalance: BigDecimal)
         fun setInputType(inputType: SendModule.InputType)
+        fun fetchFeeRate()
     }
 
     interface IFeeModuleDelegate {
-        fun onUpdateFeeRate(feeRate: Long)
+        fun onUpdateFeeRate()
     }
 
     data class FeeRateInfoViewItem(val feeRateInfo: FeeRateInfo, val selected: Boolean)
 
-    fun init(view: SendFeeViewModel, coin: Coin, moduleDelegate: IFeeModuleDelegate?): IFeeModule {
-        val feeRateProvider = FeeRateProviderFactory.provider(coin)
-        val feeCoinData = App.feeCoinProvider.feeCoinData(coin)
-        val feeCoin = feeCoinData?.first ?: coin
 
-        val baseCurrency = App.currencyManager.baseCurrency
-        val helper = SendFeePresenterHelper(App.numberFormatter, feeCoin, baseCurrency)
-        val interactor = SendFeeInteractor(App.rateStorage, feeRateProvider, App.currencyManager)
-        val presenter = SendFeePresenter(interactor, helper, coin, baseCurrency, feeCoinData)
+    class Factory(
+            private val coin: Coin,
+            private val sendHandler: SendModule.ISendHandler,
+            private val feeModuleDelegate: IFeeModuleDelegate
+    ) : ViewModelProvider.Factory {
+        @Suppress("UNCHECKED_CAST")
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
 
-        view.delegate = presenter
+            val view = SendFeeView()
+            val feeRateProvider = FeeRateProviderFactory.provider(coin)
+            val feeCoinData = App.feeCoinProvider.feeCoinData(coin)
+            val feeCoin = feeCoinData?.first ?: coin
 
-        presenter.view = view
-        presenter.moduleDelegate = moduleDelegate
+            val baseCurrency = App.currencyManager.baseCurrency
+            val helper = SendFeePresenterHelper(App.numberFormatter, feeCoin, baseCurrency)
+            val interactor = SendFeeInteractor(baseCurrency, App.xRateManager, feeRateProvider, feeCoin)
 
-        interactor.delegate = presenter
+            val presenter = SendFeePresenter(view, interactor, helper, coin, baseCurrency, feeCoinData)
 
-        return presenter
+            presenter.moduleDelegate = feeModuleDelegate
+            interactor.delegate = presenter
+            sendHandler.feeModule = presenter
+
+            return presenter as T
+        }
     }
 
 }
