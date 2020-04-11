@@ -81,9 +81,12 @@ class BlockChairDashProvider : FullTransactionInfoModule.BitcoinForksProvider {
 
 class BlockChairGroestlcoinProvider : FullTransactionInfoModule.BitcoinForksProvider {
     override val name = "BlockChair.com"
+    private val baseApiUrl = "https://blockchair.com/groestlcoin"
+    override val pingUrl = "$baseApiUrl/block/0"
+
 
     override fun url(hash: String): String {
-        return "https://blockchair.com/groestlcoin/transaction/$hash"
+        return "$baseApiUrl/transaction/$hash"
     }
 
     override fun apiRequest(hash: String): FullTransactionInfoModule.Request {
