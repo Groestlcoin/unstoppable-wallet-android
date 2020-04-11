@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'androidsvgdrawable'
+
 
 Properties buildProperties = new Properties()
 buildProperties.load(new BufferedReader(new InputStreamReader(new FileInputStream("app/confs/wallet.properties"), "UTF8")))
@@ -235,3 +237,19 @@ repositories {
     jcenter()
     google()
 }
+
+task svgToPngMipmapProd(type: fr.avianey.androidsvgdrawable.gradle.SvgDrawableTask) {
+    from = files('graphics/prod/mipmap')
+    to = file('src/main/res')
+    targetedDensities = ['hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
+    outputFormat = 'PNG'
+    outputType = 'mipmap'
+}
+/*
+task svgToPngMipmapTestnet(type: fr.avianey.androidsvgdrawable.gradle.SvgDrawableTask) {
+    from = files('graphics/test/mipmap')
+    to = file('src/devTestnet/res')
+    targetedDensities = ['hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
+    outputFormat = 'PNG'
+    outputType = 'mipmap'
+}*/
