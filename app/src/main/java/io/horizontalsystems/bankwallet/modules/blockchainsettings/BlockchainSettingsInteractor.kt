@@ -53,11 +53,14 @@ class BlockchainSettingsInteractor(
 
     override fun getWalletsForDerivationUpdate(): List<Wallet> {
         val enabledWallets = mutableListOf<Wallet>()
-        appConfigProvider.coins.firstOrNull { it.code == "BTC" }?.let { coin ->
-            walletManager.wallet(coin)?.let { wallet ->
-                enabledWallets.add(wallet)
+        for(coin in appConfigProvider.coins) {
+            if(coin.code == "BTC" || coin.code == "GRS") {
+                walletManager.wallet(coin)?.let { wallet ->
+                    enabledWallets.add(wallet)
+                }
             }
         }
+
         return enabledWallets
     }
 

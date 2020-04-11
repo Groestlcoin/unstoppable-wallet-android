@@ -170,7 +170,7 @@ abstract class AppDatabase : RoomDatabase() {
                             )
                         }
 
-                        if (coinId == "BTC" || coinId == "BCH" || coinId == "DASH") {
+                        if (coinId == "BTC" || coinId == "BCH" || coinId == "DASH" || coinId == "GRS") {
                             var newSyncMode = SyncMode.Fast
 
                             try{
@@ -207,7 +207,7 @@ abstract class AppDatabase : RoomDatabase() {
                     if (coinIdColumnIndex >= 0) {
                         val coinId = walletsCursor.getString(coinIdColumnIndex)
 
-                        if (coinId == "BTC") {
+                        if (coinId == "BTC" || coinId == "GRS") {
                             val derivationColumnIndex = walletsCursor.getColumnIndex("derivation")
                             if (derivationColumnIndex >= 0){
                                 val walletDerivation= walletsCursor.getString(derivationColumnIndex)
