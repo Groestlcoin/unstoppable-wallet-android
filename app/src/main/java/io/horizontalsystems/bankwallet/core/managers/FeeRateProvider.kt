@@ -14,8 +14,7 @@ class FeeRateProvider(context: Context, appConfig: IAppConfigProvider){
 
     private val feeRateKit = FeeRateKit(
             FeeProviderConfig(infuraProjectId = appConfig.infuraProjectId,
-                              infuraProjectSecret = appConfig.infuraProjectSecret),
-            context = context
+                              infuraProjectSecret = appConfig.infuraProjectSecret)
     )
 
     fun bitcoinFeeRates(): Single<List<FeeRateInfo>> {
@@ -34,8 +33,8 @@ class FeeRateProvider(context: Context, appConfig: IAppConfigProvider){
         return feeRateKit.dash().map { feeRates(it) }
     }
 
-    fun groestlcoinFeeRates(): List<FeeRateInfo> {
-        return feeRates(feeRateKit.groestlcoin())
+    fun groestlcoinFeeRates(): Single<List<FeeRateInfo>> {
+        return feeRateKit.groestlcoin().map {feeRates(it)}
     }
 
     private fun feeRates(feeRate: FeeRate): List<FeeRateInfo> {
@@ -74,7 +73,7 @@ class DashFeeRateProvider(private val feeRateProvider: FeeRateProvider) : IFeeRa
 }
 
 class GroestlcoinFeeRateProvider(private val feeRateProvider: FeeRateProvider) : IFeeRateProvider {
-    override fun feeRates(): List<FeeRateInfo> {
+    override fun feeRates(): Single<List<FeeRateInfo>> {
         return feeRateProvider.groestlcoinFeeRates()
     }
 
