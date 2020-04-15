@@ -50,12 +50,14 @@ class TransactionDataProviderManager(appConfig: IAppConfigTestMode, private val 
 
     private val groestlcoinProviders = when {
         appConfig.testMode -> listOf(
-                GroestlcoinBlockbookProvider(true)
-                //InsightGroestlcoinProvider(true)
+                GroestlcoinBlockbookProvider(true),
+                GroestlcoinEsploraProvider(true),
+                GroestlcoinChainzProvider(true)
         )
         else -> listOf(
                 GroestlcoinBlockbookProvider(false),
-                //InsightGroestlcoinProvider(false),
+                GroestlcoinEsploraProvider(false),
+                GroestlcoinChainzProvider(false),
                 BlockChairGroestlcoinProvider()
         )
     }
@@ -90,7 +92,7 @@ class TransactionDataProviderManager(appConfig: IAppConfigTestMode, private val 
             dash(localStorage.baseDashProvider ?: dashProviders[0].name)
         }
         is CoinType.Groestlcoin -> {
-            dash(localStorage.baseGroestlcoinProvider ?: dashProviders[0].name)
+            groestlcoin(localStorage.baseGroestlcoinProvider ?: dashProviders[0].name)
         }
         is CoinType.Binance -> {
             binance(localStorage.baseBinanceProvider ?: binanceProviders[0].name)
@@ -110,6 +112,9 @@ class TransactionDataProviderManager(appConfig: IAppConfigTestMode, private val 
             }
             is CoinType.Dash -> {
                 localStorage.baseDashProvider = name
+            }
+            is CoinType.Groestlcoin -> {
+                localStorage.baseGroestlcoinProvider = name
             }
             is CoinType.Eos -> {
                 localStorage.baseEosProvider = name
