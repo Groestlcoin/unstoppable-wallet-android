@@ -14,6 +14,7 @@ import io.horizontalsystems.bitcoincore.models.TransactionInfo
 import io.horizontalsystems.bitcoincore.models.TransactionStatus
 import io.horizontalsystems.hodler.HodlerOutputData
 import io.horizontalsystems.hodler.HodlerPlugin
+import io.horizontalsystems.bitcoincore.models.TransactionDataSortType
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -87,7 +88,7 @@ abstract class BitcoinBaseAdapter(open val kit: AbstractKit)
     fun send(amount: BigDecimal, address: String, feeRate: Long, pluginData: Map<Byte, IPluginData>?): Single<Unit> {
         return Single.create { emitter ->
             try {
-                kit.send(address, (amount * satoshisInBitcoin).toLong(), feeRate = feeRate.toInt(), pluginData = pluginData
+                kit.send(address, (amount * satoshisInBitcoin).toLong(), feeRate = feeRate.toInt(), sortType = TransactionDataSortType.Shuffle, pluginData = pluginData
                         ?: mapOf())
                 emitter.onSuccess(Unit)
             } catch (ex: Exception) {
