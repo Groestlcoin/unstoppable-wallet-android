@@ -6,3 +6,6 @@
 /captures
 /local.properties
 .externalNativeBuild
+*.apk
+output.json
+*.aar
