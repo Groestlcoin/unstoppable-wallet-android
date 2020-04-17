@@ -304,9 +304,9 @@
     <string name="CoinOption_Slow_Subtitle">۱-۱۲ ساعت</string>
     <string name="CoinOption_AddressFormatTitle">فرمت آدرس را انتخاب کنید</string>
     <string name="CoinOption_SyncModeTitle">بازیابی پارامتر ها</string>
-    <string name="CoinOption_bip44_Subtitle">قدیمی تر (شروع با ۱...)</string>
-    <string name="CoinOption_bip49_Subtitle">محبوب (شروع با ۳...)</string>
-    <string name="CoinOption_bip84_Subtitle">جدیدترین (شروع با bc1...)</string>
+    <string name="CoinOption_bip44_Subtitle">قدیمی تر (شروع با F...)</string>
+    <string name="CoinOption_bip49_Subtitle">محبوب (شروع با 3...)</string>
+    <string name="CoinOption_bip84_Subtitle">جدیدترین (شروع با grs1...)</string>
     <!--Charts-->
     <string name="Charts_TimeDuration_Day">۱روز</string>
     <string name="Charts_TimeDuration_Week">۷روز</string>

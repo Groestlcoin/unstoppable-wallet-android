@@ -304,7 +304,7 @@
     <string name="CoinOption_Slow_Subtitle">1- 12 小时</string>
     <string name="CoinOption_AddressFormatTitle">选择地址格式</string>
     <string name="CoinOption_SyncModeTitle">恢复参数</string>
-    <string name="CoinOption_bip44_Subtitle">更旧（以1开头...）</string>
+    <string name="CoinOption_bip44_Subtitle">更旧（以F开头...）</string>
     <string name="CoinOption_bip49_Subtitle">流行（以3开头...）</string>
     <string name="CoinOption_bip84_Subtitle">最新（以bc1开头...）</string>
     <!--Charts-->

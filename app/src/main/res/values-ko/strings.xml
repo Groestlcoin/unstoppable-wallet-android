@@ -311,7 +311,7 @@
     <string name="CoinOption_Slow_Subtitle">1-12 시간</string>
     <string name="CoinOption_AddressFormatTitle">주소 형식을 선택해 주세요</string>
     <string name="CoinOption_SyncModeTitle">매개 변수 복원</string>
-    <string name="CoinOption_bip44_Subtitle">더 오래된 (1부터 시작)</string>
+    <string name="CoinOption_bip44_Subtitle">더 오래된 (F부터 시작)</string>
     <string name="CoinOption_bip49_Subtitle">인기있는 (3부터 시작)</string>
     <string name="CoinOption_bip84_Subtitle">최신 (bc1부터 시작)</string>
     <!--Charts-->

@@ -305,9 +305,9 @@ qui se compose de %2s mots. Les mots doivent être entrés dans leur ordre exact
     <string name="CoinOption_Slow_Subtitle">1 - 12 heures</string>
     <string name="CoinOption_AddressFormatTitle">Choisir le format de l\'adresse</string>
     <string name="CoinOption_SyncModeTitle">Restaurer les paramètres</string>
-    <string name="CoinOption_bip44_Subtitle">Plus ancient (commence par 1...)</string>
+    <string name="CoinOption_bip44_Subtitle">Plus ancient (commence par F...)</string>
     <string name="CoinOption_bip49_Subtitle">Populaire (commence par 3...)</string>
-    <string name="CoinOption_bip84_Subtitle">Plus récent (commence par bc1...)</string>
+    <string name="CoinOption_bip84_Subtitle">Plus récent (commence par grs1...)</string>
     <!--Charts-->
     <string name="Charts_TimeDuration_Day">1J</string>
     <string name="Charts_TimeDuration_Week">7J</string>

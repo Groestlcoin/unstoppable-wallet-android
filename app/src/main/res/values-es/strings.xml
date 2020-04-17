@@ -310,9 +310,9 @@
     <string name="CoinOption_Slow_Subtitle">1-12 horas</string>
     <string name="CoinOption_AddressFormatTitle">Elija un formato de dirección</string>
     <string name="CoinOption_SyncModeTitle">Restaurar los parámetros</string>
-    <string name="CoinOption_bip44_Subtitle">Más antiguo (comenzar con 1...)</string>
+    <string name="CoinOption_bip44_Subtitle">Más antiguo (comenzar con F...)</string>
     <string name="CoinOption_bip49_Subtitle">Popular (comenzar con 3...)</string>
-    <string name="CoinOption_bip84_Subtitle">Más nuevo (comenzar con bc1...)</string>
+    <string name="CoinOption_bip84_Subtitle">Más nuevo (comenzar con grs1...)</string>
     <!--Charts-->
     <string name="Charts_TimeDuration_Day">1D</string>
     <string name="Charts_TimeDuration_Week">7D</string>
