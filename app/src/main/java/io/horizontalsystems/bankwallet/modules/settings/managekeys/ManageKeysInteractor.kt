@@ -45,7 +45,10 @@ class ManageKeysInteractor(
     }
 
     private fun mapAccounts(): List<ManageAccountItem> {
-        return predefinedAccountTypes.map {
+        val accountItem = predefinedAccountTypes.find { it.toString() == "standard" }
+        if (accountItem != null)
+            return listOf(ManageAccountItem(accountItem, predefinedAccountTypeManager.account(accountItem)))
+        else return predefinedAccountTypes.map {
             ManageAccountItem(it, account = predefinedAccountTypeManager.account(it))
         }
     }
