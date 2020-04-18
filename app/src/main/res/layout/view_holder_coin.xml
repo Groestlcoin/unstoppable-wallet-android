@@ -102,7 +102,7 @@
         android:textColor="@color/grey"
         app:layout_constraintStart_toStartOf="@+id/coinName"
         app:layout_constraintTop_toBottomOf="@+id/coinName"
-        tools:text="$6500 per BTC" />
+        tools:text="$6500 per GRS" />
 
     <FrameLayout
         android:id="@+id/rateDiffWrapper"
@@ -167,7 +167,7 @@
         android:textColor="?BallanceCoinAmountColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/border"
-        tools:text="0.000078 BTC" />
+        tools:text="0.000078 GRS" />
 
     <TextView
         android:id="@+id/balanceFiat"
@@ -238,7 +238,7 @@
             android:textColor="@color/grey"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="0.000078 BTC" />
+            tools:text="0.000078 GRS" />
 
         <TextView
             android:id="@+id/balanceFiatLocked"

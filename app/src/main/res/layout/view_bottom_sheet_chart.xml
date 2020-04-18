@@ -400,7 +400,7 @@
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toEndOf="@id/circulationTitle"
         app:layout_constraintTop_toTopOf="@+id/circulationTitle"
-        tools:text="100.92B BTC" />
+        tools:text="100.92B GRS" />
 
     <TextView
         android:id="@+id/totalSupplyTitle"
@@ -425,7 +425,7 @@
         app:layout_constraintEnd_toEndOf="@id/endGuideline"
         app:layout_constraintStart_toEndOf="@id/totalSupplyTitle"
         app:layout_constraintTop_toTopOf="@+id/totalSupplyTitle"
-        tools:text="100M BTC" />
+        tools:text="100M GRS" />
 
     <TextView
         android:id="@+id/sourceValue"

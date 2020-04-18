@@ -54,7 +54,7 @@
             android:textColor="@color/grey"
             app:layout_constraintLeft_toLeftOf="@id/titleText"
             app:layout_constraintTop_toBottomOf="@id/titleText"
-            tools:text="BTC, BCH, DASH, GRS, ETH, ERC-20" />
+            tools:text="GRS" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <io.horizontalsystems.views.ManageAccountView

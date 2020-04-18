@@ -59,7 +59,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="BTC, BCH, DASH, GRS, ETH, ERC20" />
+            tools:text="GRS" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

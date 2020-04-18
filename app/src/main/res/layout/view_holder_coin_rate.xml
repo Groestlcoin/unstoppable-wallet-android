@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toTopOf="@+id/txCoinName"
         app:layout_constraintStart_toEndOf="@+id/coinIcon"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="BTC" />
+        tools:text="GRS" />
 
     <TextView
         android:id="@+id/txCoinName"

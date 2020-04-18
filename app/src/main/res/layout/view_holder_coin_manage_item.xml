@@ -39,7 +39,7 @@
         app:layout_constraintStart_toEndOf="@+id/coinIcon"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="BTC" />
+        tools:text="GRS" />
 
     <TextView
         android:id="@+id/coinSubtitle"

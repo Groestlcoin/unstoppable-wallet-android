@@ -13,5 +13,5 @@
     android:layout_marginBottom="8dp"
     android:background="@drawable/stateful_tag_bg"
     android:textColor="?TransactionTagColor"
-    tools:text="BTC"
+    tools:text="GRS"
     />
