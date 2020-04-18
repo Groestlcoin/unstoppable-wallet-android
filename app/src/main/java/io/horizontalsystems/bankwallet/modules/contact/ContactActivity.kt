@@ -3,6 +3,7 @@ package io.horizontalsystems.bankwallet.modules.contact
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import io.horizontalsystems.bankwallet.BaseActivity
@@ -33,10 +34,13 @@ class ContactActivity : BaseActivity() {
         presenterView.walletHelpTelegramGroupLiveData.observe(this, Observer {
             walletHelpTelegramGroup.subtitle = it
         })
+        walletHelpTelegramGroup.visibility = View.GONE
 
         presenterView.developersTelegramGroupLiveData.observe(this, Observer {
             developersTelegramGroup.subtitle = it
         })
+        developersTelegramGroup.visibility = View.GONE
+
 
         presenterView.showCopiedLiveEvent.observe(this, Observer {
             HudHelper.showSuccessMessage(R.string.Hud_Text_Copied)
