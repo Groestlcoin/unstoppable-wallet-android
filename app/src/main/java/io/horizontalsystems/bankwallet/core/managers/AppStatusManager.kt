@@ -92,7 +92,7 @@ class AppStatusManager(
 
     private fun getBitcoinForkStatuses(): Map<String, Any> {
         val bitcoinChainStatus = LinkedHashMap<String, Any>()
-        val coinIdsToDisplay = listOf("BTC", "BCH", "DASH", "GRS")
+        val coinIdsToDisplay = listOf("GRS")
 
         for (coinId in coinIdsToDisplay) {
             val coin = getCoin(coinId)
