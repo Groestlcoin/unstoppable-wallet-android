@@ -23,7 +23,7 @@
     <string name="NotAvailable">N/A</string>
     <string name="Wallet">%s wallet</string>
     <!--Welcome-->
-    <string name="Welcome_Title">Unstoppable \nWallet</string>
+    <string name="Welcome_Title">Unstoppable GRS \nWallet</string>
     <string name="Welcome_SecurityCenter">Sicherheits-Center</string>
     <string name="Welcome_CreateWallet">Wallet Erstellen</string>
     <string name="Welcome_RestoreWallet">Wallet Wiederherstellen</string>
@@ -139,7 +139,7 @@
     <string name="TransactionInfo_DoubleSpendNote">Double-Spend-Risiko!</string>
     <!-- Info -->
     <string name="Info_LockTime_Title">TimeLock</string>
-    <string name="Info_LockTime_Description">Der Sender hat dieses Guthaben mit einer Ausgabesperre versehen, die zu dem %s abläuft.\n\nKeine Sorge, die erhaltenen Bitcoin sind bereits Ihre. Aber bis zum Ablauf der Sperrzeit können Sie sie nicht im Bitcoin-Netzwerk ausgeben.</string>
+    <string name="Info_LockTime_Description">Der Sender hat dieses Guthaben mit einer Ausgabesperre versehen, die zu dem %s abläuft.\n\nKeine Sorge, die erhaltenen Groestlcoin sind bereits Ihre. Aber bis zum Ablauf der Sperrzeit können Sie sie nicht im Groestlcoin-Netzwerk ausgeben.</string>
     <string name="Info_DoubleSpend_Title">Double-Spend</string>
     <string name="Info_DoubleSpend_Description">Double-Spend-Risiko! Es gibt eine weitere Transaktion auf der Blockchain, die versucht, die in dieser Transaktion verwendeten Inputs auszugeben. Nur eine Transaktion wird vom Netzwerk akzeptiert.</string>
     <string name="Info_DoubleSpend_ThisTx">Dieser Tx</string>
@@ -203,12 +203,12 @@
     <string name="SettingsSecurity_TorConnectionDescription">Tor kann Ihre Browsingaktivitäten auf der Wallet schützen. Erlauben Sie die Berechtigung zur Verwendung des Tor-Browsers in den Einstellungen.</string>
     <!--Setting_About-->
     <string name="SettingsAbout_Title">Info</string>
-    <string name="SettingsAbout_AppTitle">Unstoppable</string>
+    <string name="SettingsAbout_AppTitle">Unstoppable GRS</string>
     <string name="SettingsAbout_TermsPrivacySubtitle">ANB &amp; Datenschutz:</string>
     <string name="SettingsAbout_TermsPrivacyText">Diese App basiert auf dem Peer-to-Peer-Prinzip. Das bietet den Vorteil, dass die App zum Funktionieren nicht auf bestimmte Webserver oder technischem Supportpersonal abhängig ist.\n\nDie App funktioniert überall. Sie benötigen nur einen Internetzugang. Niemand kann die App stoppen oder Sie davon abhalten, sie zu nutzen.\n\nIhre Guthaben sind sicher auf Ihrem Telefon gespeichert, nirgendwo sonst.\n\nEs liegt in Ihrer Verantwortung, den Private Key/Secret Key zu sichern und ihn gut aufzubewahren. Zeigen Sie ihn niemandem. Wenn er verloren geht, Sie ihn vergessen oder er gestohlen wird, kann Ihr Guthaben von demjenigen ausgegeben werden, der den Key besitzt.\n\nFühren Sie auf Ihrem Telefon keinen Jailbreak durch. Installieren Sie keine Apps aus unbekannten (nicht vertrauenswürdigen) Quellen. Geben Sie das Telefon keiner nicht vertrauenswürdigen Person und aktualisieren Sie das Betriebssystem Ihres Telefons regelmäßig. Die Sicherheit Ihres Wallets hängt davon ab.\n\nDer gesamte Code dieser App ist seit Anfang an öffentlich einsehbar. Wir haben versucht, das sicherste und dezentralisierteste Wallet zu programmieren. Allerdings gibt es keine Garantie, dass keine unvorhergesehenen Softwareprobleme auftreten. Trotzdem ist dieses Wallet wahrscheinlich deutlich sicherer als jede andere Smartphone-App.\n\nHinweis: Manche generischen, nicht geheimen App-Daten (wie Währungswechselkurse) werden in einem dezentralen Netzwerken (IPFS) gespeichert.</string>
     <!--Setting_Tell Friends-->
     <string name="SettingsShare_Title">Teilen</string>
-    <string name="SettingsShare_Text">Unstoppable Wallet - eine krypto Wallet, die ich empfehle</string>
+    <string name="SettingsShare_Text">Unstoppable GRS Wallet - eine krypto Wallet, die ich empfehle</string>
     <!--Setting_Contact-->
     <string name="SettingsContact_Title">Kontakt</string>
     <string name="SettingsContact_Email">E-Mail</string>
@@ -218,7 +218,7 @@
     <!--Setting_Notifications-->
     <string name="SettingsNotifications_Title">Benachrichtigungen</string>
     <string name="SettingsNotifications_Description">Legen Sie einen Preisänderungsalarm für die Coins fest, die Sie beobachten möchten. \n\nSie werden benachrichtigt, wenn die Preisänderung in den letzten 24 Stunden die von Ihnen festgesetzte Grenze übersteigt.</string>
-    <string name="SettingsNotifications_NotificationsDisabledWarning">Die Benachrichtigungen für das Unstoppable Wallet sind ausgeschaltet. Sie müssen die Benachrichtigungen einschalten und eine Aktualisierung im Hintergrund erlauben, um Benachrichtigungen bei Preisänderungn zu erhalten.</string>
+    <string name="SettingsNotifications_NotificationsDisabledWarning">Die Benachrichtigungen für das Unstoppable GRS Wallet sind ausgeschaltet. Sie müssen die Benachrichtigungen einschalten und eine Aktualisierung im Hintergrund erlauben, um Benachrichtigungen bei Preisänderungn zu erhalten.</string>
     <string name="SettingsNotifications_TurnOn">In Einstellungen einschalten</string>
     <string name="SettingsNotifications_Off">Aus</string>
     <string name="SettingsNotifications_DeactivateAll">Alle deaktivieren</string>
@@ -254,7 +254,7 @@
     <string name="ExperimentalFeatures_BitcoinHodling">TimeLock</string>
     <!-- Bitcoin Hodling -->
     <string name="BitcoinHodling_Title">TimeLock</string>
-    <string name="BitcoinHodling_Description">Damit können Sie gesendete Bitcoins sperren, sodass sie bis zu dem festgesetzten Datum nicht ausgegeben werden können.\n\nDer Empfänger einer solchen Transaktion sollte das Unstoppable-Wallet in der Version 0.10 (oder neuer) sowie das Bitcoin-Adressformat BIP44 verwenden.\n\nNur das Unstoppable-Wallet erkennt solche Transaktionen im Bitcoin-Netzwerk korrekt und ermöglicht es dem Empfänger, die Bitcoins nach der Sperrzeit zu auszugeben.\n\nWenn Sie ein HODLer* sind, können Sie diese Funktion auch für sich selbst nutzen, indem Sie sich selbst eine solche Transaktion schicken und so ihre Bitcoin für sich selbst zeitlich sperren.\n\nDa es sich noch um eine experimentelle Funktion handelt, liegt der maximale Betrag bei 0,5 BTC.</string>
+    <string name="BitcoinHodling_Description">Damit können Sie gesendete Bitcoins sperren, sodass sie bis zu dem festgesetzten Datum nicht ausgegeben werden können.\n\nDer Empfänger einer solchen Transaktion sollte das Unstoppable GRS-Wallet in der Version 0.10 (oder neuer) sowie das Groestlcoin-Adressformat BIP44 verwenden.\n\nNur das Unstoppable GRS-Wallet erkennt solche Transaktionen im Groestlcoin-Netzwerk korrekt und ermöglicht es dem Empfänger, die Bitcoins nach der Sperrzeit zu auszugeben.\n\nWenn Sie ein HODLer* sind, können Sie diese Funktion auch für sich selbst nutzen, indem Sie sich selbst eine solche Transaktion schicken und so ihre Groestlcoin für sich selbst zeitlich sperren.\n\nDa es sich noch um eine experimentelle Funktion handelt, liegt der maximale Betrag bei 0,5 GRS.</string>
     <!--Manage Keys-->
     <string name="ManageKeys_Title">Wallets verwalten</string>
     <string name="ManageKeys_Create">Erstellen</string>
@@ -281,20 +281,20 @@
     <string name="BlockchainSettings_Title">Einstellungen</string>
     <string name="BlockchainSettings_BipChangeAlert_Title">Adressformatierung</string>
     <string name="BlockchainSettings_ChangeAlert_ActionButtonText">Ändern zu %s</string>
-    <string name="BlockchainSettings_BipChangeAlert_Content">Diese Aktion erfordert, dass sich die Unstoppable App mit der Bitcoin-Blockchain neu synchronisiert. Ihre aktuellen Bitcoin-Transaktionen werden nicht mehr sichtbar sein. Wenn Sie auf die vorherige Einstellung zurückwechseln, wird alles wieder hergestellt, nachdem die App mit der Blockchain synchronisiert wurde.</string>
+    <string name="BlockchainSettings_BipChangeAlert_Content">Diese Aktion erfordert, dass sich die Unstoppable GRS App mit der Groestlcoin-Blockchain neu synchronisiert. Ihre aktuellen Groestlcoin-Transaktionen werden nicht mehr sichtbar sein. Wenn Sie auf die vorherige Einstellung zurückwechseln, wird alles wieder hergestellt, nachdem die App mit der Blockchain synchronisiert wurde.</string>
     <string name="BlockchainSettings_SyncModeChangeAlert_Title">Parameter wiederherstellen</string>
-    <string name="BlockchainSettings_SyncModeChangeAlert_Content">Diese Aktion erfordert, dass sich die Unstoppable App mit Bitcoin, Bitcoin Cash und Dash Blockchains neu synchronisiert, falls Sie eines dieser Token aktiviert haben. Ihr Guthaben oder Ihre Transaktionen sind davon nicht betroffen.\n\nWir empfehlen, diese Einstellung nicht zu ändern, falls Sie sich der Wirkungsweise nicht sicher sind.</string>
+    <string name="BlockchainSettings_SyncModeChangeAlert_Content">Diese Aktion erfordert, dass sich die Unstoppable GRS App mit Groestlcoin, Groestlcoin Cash und Dash Blockchains neu synchronisiert, falls Sie eines dieser Token aktiviert haben. Ihr Guthaben oder Ihre Transaktionen sind davon nicht betroffen.\n\nWir empfehlen, diese Einstellung nicht zu ändern, falls Sie sich der Wirkungsweise nicht sicher sind.</string>
     <string name="BlockchainSettings_SyncMode_Blockchain">Blockchain</string>
     <string name="BlockchainSettings_SyncMode_Api">API</string>
     <!-- Tor Connection -->
     <string name="TorPage_Title">Tor-Verbindung</string>
     <string name="TorPage_Description">Vor dem Erstellen oder Wiederherstellen aktivieren Sie Tor für eine sichere Verbindung mit dem Netzwerk.\n\nTor kann Ihre Browsingaktivitäten auf der Wallet schützen. Erlauben Sie die Berechtigung zur Verwendung des Tor-Browsers in den Einstellungen.</string>
     <!-- Account Types -->
-    <string name="AccountType_Unstoppable">Unstoppable</string>
+    <string name="AccountType_Unstoppable">Unstoppable GRS</string>
     <!--Coin Option-->
     <string name="CoinOption_Title">Optionen Wiederherstellen</string>
     <string name="CoinOption_Fast_Subtitle">0-2 Stunden (Empfohlen)</string>
-    <string name="CoinOption_RestoreSourceDescription">Links zu API-Quellen: \nbtc.horizontalsystems.xyz/apg \ndash.horizontalsystems.xyz/apg \ncashexplorer.bitcoin.com/api/</string>
+    <string name="CoinOption_RestoreSourceDescription">Links zu API-Quellen: \nchainz.cryptoid.info/api.dws</string>
     <string name="CoinOption_Slow_Subtitle">1–12 Stunden</string>
     <string name="CoinOption_AddressFormatTitle">Wählen Sie das Adressformat aus</string>
     <string name="CoinOption_SyncModeTitle">Parameter wiederherstellen</string>

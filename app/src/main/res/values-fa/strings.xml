@@ -260,7 +260,7 @@
     <string name="ExperimentalFeatures_BitcoinHodling">قفل زمان</string>
     <!-- Bitcoin Hodling -->
     <string name="BitcoinHodling_Title">قفل زمان</string>
-    <string name="BitcoinHodling_Description">شما را قادر می سازد بیت کوین هایی ارسال کنید که تا تاریخ مشخص نمی توان هزینه کرد. \n\n گیرنده چنین معامله ای باید از کیف پول غیرقابل توقف استفاده کند. \n\nفقط کیف پول غیر قابل توقف می تواند چنین تراکنش هایی را به صورت صحیح در شبکه بیت کوین شناسایی کند و همچنین گیرنده را قادر به خرج کردن آن بیت کوین ها پس از پایان دوره قفل کند. \n\n اگر شما نگهدارنده هستید ، ممکن است از این ویژگی استفاده کنید تا با ارسال چنین معامله ای به خودتان ، خود را مجبور به هک کردن بیت کوین های خود کنید. \n\n با استفاده از یک ویژگی آزمایشی ، حداکثر مقدار هر تراکنش به 0.5 BTC محدود شده است.</string>
+    <string name="BitcoinHodling_Description">شما را قادر می سازد بیت کوین هایی ارسال کنید که تا تاریخ مشخص نمی توان هزینه کرد. \n\n گیرنده چنین معامله ای باید از کیف پول غیرقابل توقف استفاده کند. \n\nفقط کیف پول غیر قابل توقف می تواند چنین تراکنش هایی را به صورت صحیح در شبکه بیت کوین شناسایی کند و همچنین گیرنده را قادر به خرج کردن آن بیت کوین ها پس از پایان دوره قفل کند. \n\n اگر شما نگهدارنده هستید ، ممکن است از این ویژگی استفاده کنید تا با ارسال چنین معامله ای به خودتان ، خود را مجبور به هک کردن بیت کوین های خود کنید. \n\n با استفاده از یک ویژگی آزمایشی ، حداکثر مقدار هر تراکنش به 0.5 GRS محدود شده است.</string>
     <!--Manage Keys-->
     <string name="ManageKeys_Title">مدیریت کیف پول ها</string>
     <string name="ManageKeys_Create">به وجود آوردن</string>
@@ -300,7 +300,7 @@
     <!--Coin Option-->
     <string name="CoinOption_Title">بازیابی انتخاب ها</string>
     <string name="CoinOption_Fast_Subtitle">۰-۲ ساعت (توصیه شده)</string>
-    <string name="CoinOption_RestoreSourceDescription">لینک منابع API: \nbtc.horizontalsystems.xyz/apg \ndash.horizontalsystems.xyz/apg \ncashexplorer.bitcoin.com/api/</string>
+    <string name="CoinOption_RestoreSourceDescription">لینک منابع API: \nchainz.cryptoid.info/api.dws</string>
     <string name="CoinOption_Slow_Subtitle">۱-۱۲ ساعت</string>
     <string name="CoinOption_AddressFormatTitle">فرمت آدرس را انتخاب کنید</string>
     <string name="CoinOption_SyncModeTitle">بازیابی پارامتر ها</string>

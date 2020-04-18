@@ -1,5 +1,5 @@
 <resources>
-    <string name="App_Name" translatable="false">Unstoppable</string>
+    <string name="App_Name" translatable="false">Unstoppable GRS</string>
 
     <!--Common-->
 
@@ -30,7 +30,7 @@
 
     <!--Welcome-->
 
-    <string name="Welcome_Title">Unstoppable \nWallet</string>
+    <string name="Welcome_Title">Unstoppable GRS \nWallet</string>
     <string name="Welcome_SecurityCenter">Security Center</string>
     <string name="Welcome_CreateWallet">Create Wallet</string>
     <string name="Welcome_RestoreWallet">Restore Wallet</string>
@@ -187,7 +187,7 @@
     <!-- Info -->
 
     <string name="Info_LockTime_Title">TimeLock</string>
-    <string name="Info_LockTime_Description">The sender sent these funds with a spending lock that will expire on %s.\n\nNo worries, the received Bitcoins are already yours but until the lock period expires you can not spend them on the Bitcoin network.</string>
+    <string name="Info_LockTime_Description">The sender sent these funds with a spending lock that will expire on %s.\n\nNo worries, the received Bitcoins are already yours but until the lock period expires you can not spend them on the Groestlcoin network.</string>
 
     <string name="Info_DoubleSpend_Title">Double Spend</string>
     <string name="Info_DoubleSpend_Description">Double Spend Risk! There is another transaction on blockchain that trying to spend inputs used in this transaction. Only one transaction will be accepted by the network.</string>
@@ -254,7 +254,7 @@
     <string name="Settings_LightMode">Light Mode</string>
     <string name="Settings_About">About</string>
     <string name="Settings_ShareThisWallet">Tell Friends</string>
-    <string name="Settings_InfoTitleWithVersion" translatable="false">Unstoppable %s</string>
+    <string name="Settings_InfoTitleWithVersion" translatable="false">Unstoppable GRS %s</string>
     <string name="Settings_InfoSubtitle" translatable="false">decentralized app</string>
     <string name="Settings_Report">Contact</string>
 
@@ -277,7 +277,7 @@
     <!--Setting_About-->
 
     <string name="SettingsAbout_Title">About</string>
-    <string name="SettingsAbout_AppTitle">Unstoppable</string>
+    <string name="SettingsAbout_AppTitle">Unstoppable GRS</string>
     <string name="SettingsAbout_Subtitle" translatable="false">Decentralized App</string>
     <string name="SettingsAbout_TermsPrivacySubtitle">Terms &amp; Privacy:</string>
     <string name="SettingsAbout_TermsPrivacyText">This app is peer-to-peer. It does not depend on any web server or tech support personnel to function.
@@ -291,7 +291,7 @@
     <!--Setting_Tell Friends-->
 
     <string name="SettingsShare_Title">Share</string>
-    <string name="SettingsShare_Text">Unstoppable Wallet - a crypto wallet I recommend</string>
+    <string name="SettingsShare_Text">Unstoppable GRS Wallet - a crypto wallet I recommend</string>
 
     <!--Setting_Contact-->
 
@@ -305,7 +305,7 @@
 
     <string name="SettingsNotifications_Title">Notifications</string>
     <string name="SettingsNotifications_Description">Set price change alerts for the coins you would like to watch.\n\nYou will be alerted when the change in price for the last 24 hours exceeds selected threshold.</string>
-    <string name="SettingsNotifications_NotificationsDisabledWarning">The notifications for Unstoppable Wallet app are disabled. You need to turn them on in order to be able to receive price change alerts.</string>
+    <string name="SettingsNotifications_NotificationsDisabledWarning">The notifications for Unstoppable GRS Wallet app are disabled. You need to turn them on in order to be able to receive price change alerts.</string>
     <string name="SettingsNotifications_TurnOn">Turn on in Settings</string>
     <string name="SettingsNotifications_Off">Off</string>
     <string name="SettingsNotifications_DeactivateAll">Deactivate All</string>
@@ -341,7 +341,7 @@
     <string name="ManageCoins_title">Coin Manager</string>
     <string name="ManageCoins_save">Save</string>
     <string name="ManageCoins_Alert_CantCreateTitle">%s Wallet</string>
-    <string name="ManageCoins_Alert_CantCreateDescription">At this point Unstoppable is not able to create new %s wallets. You\'re only able to restore the existing one.</string>
+    <string name="ManageCoins_Alert_CantCreateDescription">At this point Unstoppable GRS is not able to create new %s wallets. You\'re only able to restore the existing one.</string>
 
     <!-- Experimental Feature -->
 
@@ -353,7 +353,7 @@
 
     <string name="BitcoinHodling_Title">TimeLock</string>
     <string name="BitcoinHodling_LockTime" translatable="false">Activate</string>
-    <string name="BitcoinHodling_Description">Enables you to send Bitcoins that can not be spent until specified date.\n\nThe receiver of such transaction should use Unstoppable wallet app version 0.10 or newer with BIP44 address format for the Bitcoin.\n\nOnly Unstoppable wallet can correctly identify such transactions on Bitcoin network as well as enable receiver to spend those Bitcoins after the lock period expires.\n\nIf you’re a HODLer, you may use this feature to force yourself into hodling your Bitcoins by sending such transaction to yourself.\n\nBeing an experimental feature the maximum amount per transaction is limited to 0.5 BTC.</string>
+    <string name="BitcoinHodling_Description">Enables you to send Bitcoins that can not be spent until specified date.\n\nThe receiver of such transaction should use Unstoppable GRS wallet app version 0.10 or newer with BIP44 address format for the Groestlcoin.\n\nOnly Unstoppable GRS wallet can correctly identify such transactions on Groestlcoin network as well as enable receiver to spend those Bitcoins after the lock period expires.\n\nIf you’re a HODLer, you may use this feature to force yourself into hodling your Bitcoins by sending such transaction to yourself.\n\nBeing an experimental feature the maximum amount per transaction is limited to 0.5 GRS.</string>
 
     <!--Manage Keys-->
 
@@ -388,9 +388,9 @@
     <string name="BlockchainSettings_Title">Settings</string>
     <string name="BlockchainSettings_BipChangeAlert_Title">Address Format</string>
     <string name="BlockchainSettings_ChangeAlert_ActionButtonText">Change to %s</string>
-    <string name="BlockchainSettings_BipChangeAlert_Content">This action will require Unstoppable app to resync itself with Bitcoin blockchain. Your current Bitcoin transactions will no longer be visible. Changing it back to previous setting will bring everything back after the app resyncs with blockchain.</string>
+    <string name="BlockchainSettings_BipChangeAlert_Content">This action will require Unstoppable GRS app to resync itself with Groestlcoin blockchain. Your current Groestlcoin transactions will no longer be visible. Changing it back to previous setting will bring everything back after the app resyncs with blockchain.</string>
     <string name="BlockchainSettings_SyncModeChangeAlert_Title">Restore Source</string>
-    <string name="BlockchainSettings_SyncModeChangeAlert_Content">This action will require Unstoppable app to resync itself with Bitcoin, Bitcoin Cash and Dash blockchains, if you have enabled any of these tokens. Your balance or transactions won\'t be affected.\n\nWe recommend not to change this setting if not sure what it does.</string>
+    <string name="BlockchainSettings_SyncModeChangeAlert_Content">This action will require Unstoppable GRS app to resync itself with Groestlcoin, Groestlcoin Cash and Dash blockchains, if you have enabled any of these tokens. Your balance or transactions won\'t be affected.\n\nWe recommend not to change this setting if not sure what it does.</string>
     <string name="BlockchainSettings_SyncMode_Blockchain">Blockchain</string>
     <string name="BlockchainSettings_SyncMode_Api">API</string>
 
@@ -402,7 +402,7 @@
     <!-- Account Types -->
 
     <string name="AccountType_Unstoppable">Standard</string>
-    <string name="AccountType_Unstoppable_Text" translatable="false">BTC, BCH, DASH, GRS, ETH, ERC20 tokens</string>
+    <string name="AccountType_Unstoppable_Text" translatable="false">GRS</string>
     <string name="AccountType_Eos" translatable="false">EOS</string>
     <string name="AccountType_Eos_Text" translatable="false">EOS, EOSIO tokens</string>
     <string name="AccountType_Binance" translatable="false">Binance</string>
@@ -413,10 +413,10 @@
     <string name="CoinOption_Title">Restore Options</string>
     <string name="CoinOption_Fast" translatable="false">API</string>
     <string name="CoinOption_Fast_Subtitle">0–2 hours (Recommended)</string>
-    <string name="CoinOption_RestoreSourceDescription">API sources links: \nbtc.horizontalsystems.xyz/apg \ndash.horizontalsystems.xyz/apg \ncashexplorer.bitcoin.com/api/</string>
+    <string name="CoinOption_RestoreSourceDescription">API sources links: \nchainz.cryptoid.info/api.dws</string>
     <string name="CoinOption_Slow" translatable="false">Blockchain</string>
     <string name="CoinOption_Slow_Subtitle">1–24 hours</string>
-    <string name="CoinOption_AddressFormatTitle">Bitcoin address format</string>
+    <string name="CoinOption_AddressFormatTitle">Groestlcoin address format</string>
     <string name="CoinOption_SyncModeTitle">Restore Source</string>
     <string name="CoinOption_bip44" translatable="false">Legacy - BIP 44</string>
     <string name="CoinOption_bip49" translatable="false">SegWit - BIP 49</string>

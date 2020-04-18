@@ -23,7 +23,7 @@
     <string name="NotAvailable">不可用</string>
     <string name="Wallet">%s钱包</string>
     <!--Welcome-->
-    <string name="Welcome_Title">Unstoppable\n钱包</string>
+    <string name="Welcome_Title">Unstoppable GRS\n钱包</string>
     <string name="Welcome_SecurityCenter">安全中心</string>
     <string name="Welcome_CreateWallet">创建钱包</string>
     <string name="Welcome_RestoreWallet">恢复钱包</string>
@@ -203,7 +203,7 @@
     <string name="SettingsSecurity_TorConnectionDescription">Tor可以保护您钱包上的浏览活动。在设置中启用权限以使用tor浏览器。</string>
     <!--Setting_About-->
     <string name="SettingsAbout_Title">关于</string>
-    <string name="SettingsAbout_AppTitle">Unstoppable</string>
+    <string name="SettingsAbout_AppTitle">Unstoppable GRS</string>
     <string name="SettingsAbout_TermsPrivacySubtitle">条款和隐私：</string>
     <string name="SettingsAbout_TermsPrivacyText">此应用是一款点对点应用。其运作不依赖于任何网络服务器或技术支持人员。
 \n\n只要有网络它就能工作。没有实体能够阻止此应用工作或者阻止任何人使用它。
@@ -214,7 +214,7 @@
 \n\n像货币汇率等通用非私有应用数据将保存在分散式存储系统（IPFS）。</string>
     <!--Setting_Tell Friends-->
     <string name="SettingsShare_Title">分享</string>
-    <string name="SettingsShare_Text">Unstoppable Wallet——我强烈推荐的一款加密货币钱包</string>
+    <string name="SettingsShare_Text">Unstoppable GRS Wallet——我强烈推荐的一款加密货币钱包</string>
     <!--Setting_Contact-->
     <string name="SettingsContact_Title">联系信息</string>
     <string name="SettingsContact_Email">邮件</string>
@@ -260,7 +260,7 @@
     <string name="ExperimentalFeatures_BitcoinHodling">时间锁定</string>
     <!-- Bitcoin Hodling -->
     <string name="BitcoinHodling_Title">时间锁定</string>
-    <string name="BitcoinHodling_Description">让您汇出在指定日期前无法消费的比特币。\n\n 此交易的收款人应使用Unstoppable钱包。\n\n只有Unstoppable钱包能够正确识别此类在比特币网络上的交易并让收款人在锁定期限结束后消费那些比特币。\n\n如果您是持有人，您可以使用此功能通过向自己发送此类交易的方式来强制自己持有比特币。\n\n作为实验性功能，每次交易的最大金额限制为0.5 BTC。</string>
+    <string name="BitcoinHodling_Description">让您汇出在指定日期前无法消费的比特币。\n\n 此交易的收款人应使用Unstoppable钱包。\n\n只有Unstoppable钱包能够正确识别此类在比特币网络上的交易并让收款人在锁定期限结束后消费那些比特币。\n\n如果您是持有人，您可以使用此功能通过向自己发送此类交易的方式来强制自己持有比特币。\n\n作为实验性功能，每次交易的最大金额限制为0.5 GRS。</string>
     <!--Manage Keys-->
     <string name="ManageKeys_Title">管理钱包</string>
     <string name="ManageKeys_Create">创建</string>
@@ -296,11 +296,11 @@
     <string name="TorPage_Title">Tor连接</string>
     <string name="TorPage_Description">在创建或恢复前启用Tor以便实现网络的安全连接。\n\nTor可以保护您钱包上的浏览活动。在设置中启用权限以使用Tor浏览器。</string>
     <!-- Account Types -->
-    <string name="AccountType_Unstoppable">Unstoppable</string>
+    <string name="AccountType_Unstoppable">Unstoppable GRS</string>
     <!--Coin Option-->
     <string name="CoinOption_Title">恢复选项</string>
     <string name="CoinOption_Fast_Subtitle">0 - 2小时（推荐）</string>
-    <string name="CoinOption_RestoreSourceDescription">API 源链接： \nbtc.horizontalsystems.xyz/apg \ndash.horizontalsystems.xyz/apg \ncashexplorer.bitcoin.com/api/</string>
+    <string name="CoinOption_RestoreSourceDescription">API 源链接： \nchainz.cryptoid.info/api.dws</string>
     <string name="CoinOption_Slow_Subtitle">1- 12 小时</string>
     <string name="CoinOption_AddressFormatTitle">选择地址格式</string>
     <string name="CoinOption_SyncModeTitle">恢复参数</string>

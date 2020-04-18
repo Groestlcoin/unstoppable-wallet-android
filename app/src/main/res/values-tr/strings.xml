@@ -23,7 +23,7 @@
     <string name="NotAvailable">N/A</string>
     <string name="Wallet">%s cüzdanı</string>
     <!--Welcome-->
-    <string name="Welcome_Title">Unstoppable \nCüzdan</string>
+    <string name="Welcome_Title">Unstoppable GRS \nCüzdan</string>
     <string name="Welcome_SecurityCenter">Güvenlik Merkezi</string>
     <string name="Welcome_CreateWallet">Cüzdan Oluştur</string>
     <string name="Welcome_RestoreWallet">Cüzdanı Geri Yükle</string>
@@ -139,7 +139,7 @@
     <string name="TransactionInfo_DoubleSpendNote">Çifte Harcama Riski Var!</string>
     <!-- Info -->
     <string name="Info_LockTime_Title">TimeLock</string>
-    <string name="Info_LockTime_Description">Gönderici bu fonları %s.\n\n tarihte sona erecek şekilde bir harcama kilidiyle gönderdi. Endişelenmeyin, alınan Bitcoin\'ler zaten sizindir ancak kilitleme süresi sona erene kadar bunları harcayamazsınız.</string>
+    <string name="Info_LockTime_Description">Gönderici bu fonları %s.\n\n tarihte sona erecek şekilde bir harcama kilidiyle gönderdi. Endişelenmeyin, alınan Groestlcoin\'ler zaten sizindir ancak kilitleme süresi sona erene kadar bunları harcayamazsınız.</string>
     <string name="Info_DoubleSpend_Title">Çifte Harcama</string>
     <string name="Info_DoubleSpend_Description">Çifte Harcama Riski! Blockchain\'de, bu işlemde kullanılan girdileri harcamaya çalışan başka bir işlem var. Ağ tarafından yalnızca bir işlem kabul edilecektir.</string>
     <string name="Info_DoubleSpend_ThisTx">Bu Tx</string>
@@ -214,7 +214,7 @@
 \n\nDöviz kurları gibi bazı 	jenerik resmi olmayan uygulama verileri merkezi olmayan IPFS sisteminde depolanır. </string>
     <!--Setting_Tell Friends-->
     <string name="SettingsShare_Title">Paylaş</string>
-    <string name="SettingsShare_Text">Unstoppable Wallet - kullanmanız gereken kripto para cüzdanı</string>
+    <string name="SettingsShare_Text">Unstoppable GRS Wallet - kullanmanız gereken kripto para cüzdanı</string>
     <!--Setting_Contact-->
     <string name="SettingsContact_Title">Iletişim</string>
     <string name="SettingsContact_Email">E-posta</string>
@@ -224,7 +224,7 @@
     <!--Setting_Notifications-->
     <string name="SettingsNotifications_Title">Bildirimler</string>
     <string name="SettingsNotifications_Description">İzlemek istediğiniz paralar için fiyat değişikliği uyarılarını ayarlayın.\n\nSon 24 saatteki fiyat değişikliği seçilen eşiği aştığında uyarılırsınız.</string>
-    <string name="SettingsNotifications_NotificationsDisabledWarning">Unstoppable Cüzdan uygulaması için bildirimler devre dışı bırakıldı. Fiyat değişikliği uyarıları alabilmek için Bildirimler\'i açmanız ve arka plan uygulaması yenilemesine izin vermeniz gerekir.</string>
+    <string name="SettingsNotifications_NotificationsDisabledWarning">Unstoppable GRS Cüzdan uygulaması için bildirimler devre dışı bırakıldı. Fiyat değişikliği uyarıları alabilmek için Bildirimler\'i açmanız ve arka plan uygulaması yenilemesine izin vermeniz gerekir.</string>
     <string name="SettingsNotifications_TurnOn">Ayarlardan aç</string>
     <string name="SettingsNotifications_Off">Kapat</string>
     <string name="SettingsNotifications_DeactivateAll">Etkisizleştir</string>
@@ -260,7 +260,7 @@
     <string name="ExperimentalFeatures_BitcoinHodling">TimeLock</string>
     <!-- Bitcoin Hodling -->
     <string name="BitcoinHodling_Title">TimeLock</string>
-    <string name="BitcoinHodling_Description">Belirtilen tarihe kadar harcanmamış Bitcoin\'leri göndermenize olanak verir.\n\nBu tür bir işlemin alıcısı Unstoppable cüzdan kullanmalıdır.\n\nSadece Unstoppable cüzdan, Bitcoin ağındaki bu tür işlemleri doğru bir şekilde tanımlayabilir ve kilitleme süresi dolduktan sonra da alıcının bu Bitcoin\'leri harcamasını sağlayabilir.\n\nEğer bir HODLer iseniz, kendinize böyle bir işlem göndererek, bu özelliği Bitcoin\'lerinizi zarar etmeden uzun süre elinizde tutmaya zorlamak için kullanabilirsiniz.\n\nDeneysel bir özellik olduğundan, işlem başına maksimum tutar 0.5 BTC ile sınırlandırılmıştır.</string>
+    <string name="BitcoinHodling_Description">Belirtilen tarihe kadar harcanmamış Groestlcoin\'leri göndermenize olanak verir.\n\nBu tür bir işlemin alıcısı Unstoppable GRS cüzdan kullanmalıdır.\n\nSadece Unstoppable GRS cüzdan, Groestlcoin ağındaki bu tür işlemleri doğru bir şekilde tanımlayabilir ve kilitleme süresi dolduktan sonra da alıcının bu Groestlcoin\'leri harcamasını sağlayabilir.\n\nEğer bir HODLer iseniz, kendinize böyle bir işlem göndererek, bu özelliği Groestlcoin\'lerinizi zarar etmeden uzun süre elinizde tutmaya zorlamak için kullanabilirsiniz.\n\nDeneysel bir özellik olduğundan, işlem başına maksimum tutar 0.5 GRS ile sınırlandırılmıştır.</string>
     <!--Manage Keys-->
     <string name="ManageKeys_Title">Cüzdanları yönet</string>
     <string name="ManageKeys_Create">Oluştur</string>
@@ -287,16 +287,16 @@
     <string name="BlockchainSettings_Title">Ayarlar</string>
     <string name="BlockchainSettings_BipChangeAlert_Title">Adres Formatı</string>
     <string name="BlockchainSettings_ChangeAlert_ActionButtonText">%s\'e değiştir</string>
-    <string name="BlockchainSettings_BipChangeAlert_Content">Bu işlem, Unstoppable uygulaması Bitcoin blockchain ile kendini yeniden senkronize etmek için gerektirir. Mevcut Bitcoin işlemleriniz artık görünmeyecek. Önceki ayara geri döndürmek, uygulama blockchain ile yeniden senkronize edildikten sonra her şeyi geri getirir.</string>
+    <string name="BlockchainSettings_BipChangeAlert_Content">Bu işlem, Unstoppable GRS uygulaması Groestlcoin blockchain ile kendini yeniden senkronize etmek için gerektirir. Mevcut Groestlcoin işlemleriniz artık görünmeyecek. Önceki ayara geri döndürmek, uygulama blockchain ile yeniden senkronize edildikten sonra her şeyi geri getirir.</string>
     <string name="BlockchainSettings_SyncModeChangeAlert_Title">Geri Yükleme Ayarları</string>
-    <string name="BlockchainSettings_SyncModeChangeAlert_Content">Bu işlem, Unstoppable uygulaması Bitcoin, Bitcoin Cash and Dash blockchain ile kendini yeniden senkronize etmek için gerektirir, bu belirteçlerden herhangi birini etkinleştirdiyseniz. Bakiyeniz veya işlemleriniz etkilenmeyecektir.\n\nNe yaptığından emin değilseniz bu ayarı değiştirmemenizi öneririz.</string>
+    <string name="BlockchainSettings_SyncModeChangeAlert_Content">Bu işlem, Unstoppable GRS uygulaması Groestlcoin ile kendini yeniden senkronize etmek için gerektirir, bu belirteçlerden herhangi birini etkinleştirdiyseniz. Bakiyeniz veya işlemleriniz etkilenmeyecektir.\n\nNe yaptığından emin değilseniz bu ayarı değiştirmemenizi öneririz.</string>
     <string name="BlockchainSettings_SyncMode_Blockchain">Blockchain</string>
     <string name="BlockchainSettings_SyncMode_Api">API</string>
     <!-- Tor Connection -->
     <string name="TorPage_Title">Tor Bağlantısı</string>
     <string name="TorPage_Description">Oluşturmadan veya geri yüklemeden önce ağ ile güvenli bağlantı için Tor özelliğini etkinleştirin. \n\nTor ile cüzdandaki tarama etkinliklerinizi koruyabilirsiniz. Ayarlarda Tor tarayıcıyı kullanmaya izin verin.</string>
     <!-- Account Types -->
-    <string name="AccountType_Unstoppable">Unstoppable</string>
+    <string name="AccountType_Unstoppable">Unstoppable GRS</string>
     <!--Coin Option-->
     <string name="CoinOption_Title">Geri yükleme seçenekleri</string>
     <string name="CoinOption_Fast_Subtitle">0-2 saat (Tavsiye edilen)</string>

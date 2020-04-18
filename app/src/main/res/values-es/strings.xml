@@ -23,7 +23,7 @@
     <string name="NotAvailable">N/A</string>
     <string name="Wallet">%s monedero</string>
     <!--Welcome-->
-    <string name="Welcome_Title">Monedero \nUnstoppable</string>
+    <string name="Welcome_Title">Monedero \nUnstoppable GRS</string>
     <string name="Welcome_SecurityCenter">Centro de seguridad</string>
     <string name="Welcome_CreateWallet">Crear cartera</string>
     <string name="Welcome_RestoreWallet">Restaurar cartera</string>
@@ -139,7 +139,7 @@
     <string name="TransactionInfo_DoubleSpendNote">¡Riesgo de doble gasto!</string>
     <!-- Info -->
     <string name="Info_LockTime_Title">TimeLock</string>
-    <string name="Info_LockTime_Description">El remitente envió estos fondos con un bloqueo del gasto que expirará %s.\n\nNo te preocupes, los Bitcoins recibidos ya son tuyos, pero hasta que el período de bloqueo expire, no puedes gastarlos en la red Bitcoin.</string>
+    <string name="Info_LockTime_Description">El remitente envió estos fondos con un bloqueo del gasto que expirará %s.\n\nNo te preocupes, los Bitcoins recibidos ya son tuyos, pero hasta que el período de bloqueo expire, no puedes gastarlos en la red Groestlcoin.</string>
     <string name="Info_DoubleSpend_Title">Doble gasto</string>
     <string name="Info_DoubleSpend_Description">¡Riesgo de doble gasto! Hay otra transacción en blockchain que intenta gastar entradas usadas en esta transacción. Solo una transacción será aceptada por la red.</string>
     <string name="Info_DoubleSpend_ThisTx">Esta Tx</string>
@@ -203,7 +203,7 @@
     <string name="SettingsSecurity_TorConnectionDescription">Tor puede proteger tus actividades de navegación en la cartera. Autoriza el permiso para usar el navegador tor en la configuración.</string>
     <!--Setting_About-->
     <string name="SettingsAbout_Title">Acerca de</string>
-    <string name="SettingsAbout_AppTitle">Unstoppable</string>
+    <string name="SettingsAbout_AppTitle">Unstoppable GRS</string>
     <string name="SettingsAbout_TermsPrivacySubtitle">Términos &amp; privacidad:</string>
     <string name="SettingsAbout_TermsPrivacyText">Esta aplicación es de servidor a servidor. No depende de ninguna web o tecnología personal de apoyo a la función.
 
@@ -220,7 +220,7 @@
 \n\nAlgunos datos genéricos de carácter público de esta app se guardan en centros de almacenamiento descentralizado (IPFS).</string>
     <!--Setting_Tell Friends-->
     <string name="SettingsShare_Title">Compartir</string>
-    <string name="SettingsShare_Text">Monedero Unstoppable - un monedero de criptomonedas que yo recomiendo</string>
+    <string name="SettingsShare_Text">Monedero Unstoppable GRS - un monedero de criptomonedas que yo recomiendo</string>
     <!--Setting_Contact-->
     <string name="SettingsContact_Title">Contacto</string>
     <string name="SettingsContact_Email">Correo electrónico</string>
@@ -230,7 +230,7 @@
     <!--Setting_Notifications-->
     <string name="SettingsNotifications_Title">Notificaciones</string>
     <string name="SettingsNotifications_Description">Establecer alertas de cambio de precio para las monedas que desea ver.\n\nSe le avisará cuando el cambio de precio, durante las últimas 24 horas, supere el umbral seleccionado.</string>
-    <string name="SettingsNotifications_NotificationsDisabledWarning">Las notificaciones para la aplicación del Monedero Unstoppable están desactivadas. Necesita activarlas para poder recibir alertas de cambio de precios.</string>
+    <string name="SettingsNotifications_NotificationsDisabledWarning">Las notificaciones para la aplicación del Monedero Unstoppable GRS están desactivadas. Necesita activarlas para poder recibir alertas de cambio de precios.</string>
     <string name="SettingsNotifications_TurnOn">Activar en ajustes</string>
     <string name="SettingsNotifications_Off">Desactivado</string>
     <string name="SettingsNotifications_DeactivateAll">Desactivar todo</string>
@@ -259,14 +259,14 @@
     <string name="ManageCoins_title">Gestor de monedas</string>
     <string name="ManageCoins_save">Guardar</string>
     <string name="ManageCoins_Alert_CantCreateTitle">%s Monedero</string>
-    <string name="ManageCoins_Alert_CantCreateDescription">En este momento Unstoppable no es capaz de crear nuevas cuentas de monederos %s. Solo puede restaurar la existente.</string>
+    <string name="ManageCoins_Alert_CantCreateDescription">En este momento Unstoppable GRS no es capaz de crear nuevas cuentas de monederos %s. Solo puede restaurar la existente.</string>
     <!-- Experimental Feature -->
     <string name="ExperimentalFeatures_Title">Experimental</string>
     <string name="ExperimentalFeatures_Description">Las siguientes características son experimentales y deben utilizarse con precaución. Aunque hemos probado a fondo estas características usando nuestros propios fondos criptográficos, no podemos garantizar que funcionen como se espera en todos los casos posibles.</string>
     <string name="ExperimentalFeatures_BitcoinHodling">TimeLock</string>
     <!-- Bitcoin Hodling -->
     <string name="BitcoinHodling_Title">TimeLock</string>
-    <string name="BitcoinHodling_Description">Permite enviar Bitcoins que no se pueden gastar hasta la fecha establecida.\n\nEl receptor de dicha transacción debe utilizar el monedero Unstoppable.\n\nSólo el monedero Unstoppable puede identificar correctamente tales transacciones en la red Bitcoin, así como permitir que el receptor gaste esos Bitcoins después de que expire el período de bloqueo.\n\nSi eres un HODLer, puedes usar esta función para obligarte a retener tus Bitcoins enviándote dicha transacción a ti mismo.\n\nPor ser característica experimental, la cantidad máxima por transacción está limitada a 0.5 BTC.</string>
+    <string name="BitcoinHodling_Description">Permite enviar Bitcoins que no se pueden gastar hasta la fecha establecida.\n\nEl receptor de dicha transacción debe utilizar el monedero Unstoppable GRS.\n\nSólo el monedero Unstoppable GRS puede identificar correctamente tales transacciones en la red Groestlcoin, así como permitir que el receptor gaste esos Bitcoins después de que expire el período de bloqueo.\n\nSi eres un HODLer, puedes usar esta función para obligarte a retener tus Bitcoins enviándote dicha transacción a ti mismo.\n\nPor ser característica experimental, la cantidad máxima por transacción está limitada a 0.5 GRS.</string>
     <!--Manage Keys-->
     <string name="ManageKeys_Title">Gestionar Monederos</string>
     <string name="ManageKeys_Create">Crear</string>
@@ -293,9 +293,9 @@
     <string name="BlockchainSettings_Title">Ajustes</string>
     <string name="BlockchainSettings_BipChangeAlert_Title">Formato de Dirección</string>
     <string name="BlockchainSettings_ChangeAlert_ActionButtonText">Cambiar a %s</string>
-    <string name="BlockchainSettings_BipChangeAlert_Content">Esta acción requerirá que la aplicación Unstoppable se vuelva a sincronizar con la blockchain de Bitcoin. Sus transacciones actuales de Bitcoin ya no serán visibles. Cambiarlo de nuevo a la configuración anterior volverá a traer todo después de que la aplicación se vuelva a sincronizar con blockchain.</string>
+    <string name="BlockchainSettings_BipChangeAlert_Content">Esta acción requerirá que la aplicación Unstoppable GRS se vuelva a sincronizar con la blockchain de Groestlcoin. Sus transacciones actuales de Groestlcoin ya no serán visibles. Cambiarlo de nuevo a la configuración anterior volverá a traer todo después de que la aplicación se vuelva a sincronizar con blockchain.</string>
     <string name="BlockchainSettings_SyncModeChangeAlert_Title">Restaurar Fuente</string>
-    <string name="BlockchainSettings_SyncModeChangeAlert_Content">Esta acción requerirá que la aplicación Unstoppable se vuelva a sincronizar con Bitcoin, Bitcoin Cash y Dash blockchains, si has activado cualquiera de estos tokens. Su saldo o transacciones no se verán afectadas.\n\n Recomendamos no cambiar esta configuración si no está seguro de lo que hace.</string>
+    <string name="BlockchainSettings_SyncModeChangeAlert_Content">Esta acción requerirá que la aplicación Unstoppable GRS se vuelva a sincronizar con Groestlcoin, Groestlcoin Cash y Dash blockchains, si has activado cualquiera de estos tokens. Su saldo o transacciones no se verán afectadas.\n\n Recomendamos no cambiar esta configuración si no está seguro de lo que hace.</string>
     <string name="BlockchainSettings_SyncMode_Blockchain">Blockchain</string>
     <string name="BlockchainSettings_SyncMode_Api">API</string>
     <!-- Tor Connection -->
@@ -306,7 +306,7 @@
     <!--Coin Option-->
     <string name="CoinOption_Title">Restaurar opciones</string>
     <string name="CoinOption_Fast_Subtitle">0-2 horas (Recomendado)</string>
-    <string name="CoinOption_RestoreSourceDescription">Enlaces de fuentes API: \nbtc.horizontalsystems.xyz/apg \ndash.horizontalsystems.xyz/apg \ncashexplorer.bitcoin.com/api/</string>
+    <string name="CoinOption_RestoreSourceDescription">Enlaces de fuentes API: \nchainz.cryptoid.info/api.dws</string>
     <string name="CoinOption_Slow_Subtitle">1-12 horas</string>
     <string name="CoinOption_AddressFormatTitle">Elija un formato de dirección</string>
     <string name="CoinOption_SyncModeTitle">Restaurar los parámetros</string>

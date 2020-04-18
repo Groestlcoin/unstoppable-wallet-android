@@ -23,7 +23,7 @@
     <string name="NotAvailable">Нет данных</string>
     <string name="Wallet">%s Кошелек</string>
     <!--Welcome-->
-    <string name="Welcome_Title">Unstoppable \nКошелек</string>
+    <string name="Welcome_Title">Unstoppable GRS \nКошелек</string>
     <string name="Welcome_SecurityCenter">Безопасность</string>
     <string name="Welcome_CreateWallet">Создать Кошелек</string>
     <string name="Welcome_RestoreWallet">Восстановить Кошелек</string>
@@ -203,7 +203,7 @@
     <string name="SettingsSecurity_TorConnectionDescription">Tor can safeguard your browsing activities on wallet. Allow permission for using tor browser in settings.</string>
     <!--Setting_About-->
     <string name="SettingsAbout_Title">О приложении</string>
-    <string name="SettingsAbout_AppTitle">Unstoppable</string>
+    <string name="SettingsAbout_AppTitle">Unstoppable GRS</string>
     <string name="SettingsAbout_TermsPrivacySubtitle">Условия &amp; Политика конфиденциальности:</string>
     <string name="SettingsAbout_TermsPrivacyText">Это приложение полностью децентрализованно. Работоспособность этого приложения не зависит от сторонних серверов или какой-либо команды тех поддержки.
 \n\nПриложение работает везде, пока есть интернет. Этот кошелек или его пользователи не могут быть заблокированы кем-либо.
@@ -214,7 +214,7 @@
 \n\nНекоторые публичные данные используемые приложением такие, как обменные курсы валют хранятся в децентрализованном хранилище (IPFS).</string>
     <!--Setting_Tell Friends-->
     <string name="SettingsShare_Title">Поделиться</string>
-    <string name="SettingsShare_Text">Unstoppable Wallet - криптокошелек, который я рекомендую</string>
+    <string name="SettingsShare_Text">Unstoppable GRS Wallet - криптокошелек, который я рекомендую</string>
     <!--Setting_Contact-->
     <string name="SettingsContact_Title">Kонтакты</string>
     <string name="SettingsContact_Email">Эл. почта</string>
@@ -224,7 +224,7 @@
     <!--Setting_Notifications-->
     <string name="SettingsNotifications_Title">Уведомления </string>
     <string name="SettingsNotifications_Description">Установите  уведомления о смене цен для монет, за которыми вы бы хотели следить.\n\nВы будете предупреждены, когда изменение цены за последние 24 часа превысят выбранный порог.</string>
-    <string name="SettingsNotifications_NotificationsDisabledWarning">Уведомления для приложения Unstoppable Кошелек отключены. Вам нужно включить уведомления и разрешить фоновое обновление для приложения, чтобы иметь возможность получать уведомления о смене цен.</string>
+    <string name="SettingsNotifications_NotificationsDisabledWarning">Уведомления для приложения Unstoppable GRS Кошелек отключены. Вам нужно включить уведомления и разрешить фоновое обновление для приложения, чтобы иметь возможность получать уведомления о смене цен.</string>
     <string name="SettingsNotifications_TurnOn">Включить в настройках</string>
     <string name="SettingsNotifications_Off">Выкл.</string>
     <string name="SettingsNotifications_DeactivateAll">Отключить всё</string>
@@ -260,7 +260,7 @@
     <string name="ExperimentalFeatures_BitcoinHodling">TimeLock</string>
     <!-- Bitcoin Hodling -->
     <string name="BitcoinHodling_Title">TimeLock</string>
-    <string name="BitcoinHodling_Description">Позволяет отправлять биткойны, которые могут быть потрачены только после указанной даты.\n\nПолучатель такой транзакции должен быть пользователем кошелька Unstoppable.\n\nТолько кошелек Unstoppable может правильно распознать и обработать такие транзакции в сети Bitcoin, и позволить получателю тратить эти биткойны по истечении периода блокировки.\n\nЕсли вы HODLer (долгосрочный инвестор), то вы можете использовать эту функцию отправив биткойны себе. \n\nТак как это экспериментальная функция, максимальная сумма транзакции ограничена 0,5 BTC.</string>
+    <string name="BitcoinHodling_Description">Позволяет отправлять биткойны, которые могут быть потрачены только после указанной даты.\n\nПолучатель такой транзакции должен быть пользователем кошелька Unstoppable GRS.\n\nТолько кошелек Unstoppable GRS может правильно распознать и обработать такие транзакции в сети Groestlcoin, и позволить получателю тратить эти биткойны по истечении периода блокировки.\n\nЕсли вы HODLer (долгосрочный инвестор), то вы можете использовать эту функцию отправив биткойны себе. \n\nТак как это экспериментальная функция, максимальная сумма транзакции ограничена 0,5 GRS.</string>
     <!--Manage Keys-->
     <string name="ManageKeys_Title">Управление Кошельками</string>
     <string name="ManageKeys_Create">Создать</string>
@@ -287,20 +287,20 @@
     <string name="BlockchainSettings_Title">Настройки</string>
     <string name="BlockchainSettings_BipChangeAlert_Title">Формат Адреса</string>
     <string name="BlockchainSettings_ChangeAlert_ActionButtonText">Изменить на %s</string>
-    <string name="BlockchainSettings_BipChangeAlert_Content">This action will require Unstoppable app to resync itself with Bitcoin blockchain. Your current Bitcoin transactions will no longer be visible. Changing it back to previous setting will bring everything back after the app resyncs with blockchain.</string>
+    <string name="BlockchainSettings_BipChangeAlert_Content">This action will require Unstoppable GRS app to resync itself with Groestlcoin blockchain. Your current Groestlcoin transactions will no longer be visible. Changing it back to previous setting will bring everything back after the app resyncs with blockchain.</string>
     <string name="BlockchainSettings_SyncModeChangeAlert_Title">Источник Восстановления</string>
-    <string name="BlockchainSettings_SyncModeChangeAlert_Content">This action will require Unstoppable app to resync itself with Bitcoin, Bitcoin Cash and Dash blockchains, if you have enabled any of these tokens. Your balance or transactions won\'t be affected.\n\nWe recommend not to change this setting if not sure what it does.</string>
+    <string name="BlockchainSettings_SyncModeChangeAlert_Content">This action will require Unstoppable GRS app to resync itself with Groestlcoin blockchains, if you have enabled any of these tokens. Your balance or transactions won\'t be affected.\n\nWe recommend not to change this setting if not sure what it does.</string>
     <string name="BlockchainSettings_SyncMode_Blockchain">Блокчейн</string>
     <string name="BlockchainSettings_SyncMode_Api">API</string>
     <!-- Tor Connection -->
     <string name="TorPage_Title">Соединение с Tor</string>
     <string name="TorPage_Description">Before creating or restoring enable Tor for secure connection with network.\n\nTor can safeguard your browsing activities on wallet. Allow permission for using Tor browser in settings.</string>
     <!-- Account Types -->
-    <string name="AccountType_Unstoppable">Unstoppable</string>
+    <string name="AccountType_Unstoppable">Unstoppable GRS</string>
     <!--Coin Option-->
     <string name="CoinOption_Title">Параметры Восстановления</string>
     <string name="CoinOption_Fast_Subtitle">0-2 часа (Рекомендуется)</string>
-    <string name="CoinOption_RestoreSourceDescription">Ссылки на источники API: \nbtc.horizontalsystems.xyz/apg \ndash.horizontalsystems.xyz/apg \ncashexplorer.bitcoin.com/api/</string>
+    <string name="CoinOption_RestoreSourceDescription">Ссылки на источники API: \nchainz.cryptoid.info/api.dws</string>
     <string name="CoinOption_Slow_Subtitle">1–12 часов</string>
     <string name="CoinOption_AddressFormatTitle">Выберите формат адреса</string>
     <string name="CoinOption_SyncModeTitle">Опции восстановления</string>
