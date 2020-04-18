@@ -47,6 +47,8 @@ class MainSettingsFragment : Fragment() {
         subscribeToRouterEvents(router)
 
         presenter.viewDidLoad()
+
+        manageCoins.visibility = View.GONE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
