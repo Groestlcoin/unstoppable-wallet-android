@@ -187,7 +187,7 @@
     <!-- Info -->
 
     <string name="Info_LockTime_Title">TimeLock</string>
-    <string name="Info_LockTime_Description">The sender sent these funds with a spending lock that will expire on %s.\n\nNo worries, the received Bitcoins are already yours but until the lock period expires you can not spend them on the Groestlcoin network.</string>
+    <string name="Info_LockTime_Description">The sender sent these funds with a spending lock that will expire on %s.\n\nNo worries, the received Groestlcoins are already yours but until the lock period expires you can not spend them on the Groestlcoin network.</string>
 
     <string name="Info_DoubleSpend_Title">Double Spend</string>
     <string name="Info_DoubleSpend_Description">Double Spend Risk! There is another transaction on blockchain that trying to spend inputs used in this transaction. Only one transaction will be accepted by the network.</string>
@@ -353,7 +353,7 @@
 
     <string name="BitcoinHodling_Title">TimeLock</string>
     <string name="BitcoinHodling_LockTime" translatable="false">Activate</string>
-    <string name="BitcoinHodling_Description">Enables you to send Bitcoins that can not be spent until specified date.\n\nThe receiver of such transaction should use Unstoppable GRS wallet app version 0.10 or newer with BIP44 address format for the Groestlcoin.\n\nOnly Unstoppable GRS wallet can correctly identify such transactions on Groestlcoin network as well as enable receiver to spend those Bitcoins after the lock period expires.\n\nIf you’re a HODLer, you may use this feature to force yourself into hodling your Bitcoins by sending such transaction to yourself.\n\nBeing an experimental feature the maximum amount per transaction is limited to 0.5 GRS.</string>
+    <string name="BitcoinHodling_Description">Enables you to send Groestlcoins that can not be spent until specified date.\n\nThe receiver of such transaction should use Unstoppable GRS wallet app version 0.10 or newer with BIP44 address format for the Groestlcoin.\n\nOnly Unstoppable GRS wallet can correctly identify such transactions on Groestlcoin network as well as enable receiver to spend those Groestlcoins after the lock period expires.\n\nIf you’re a HODLer, you may use this feature to force yourself into hodling your Groestlcoins by sending such transaction to yourself.\n\nBeing an experimental feature the maximum amount per transaction is limited to 0.5 GRS.</string>
 
     <!--Manage Keys-->
 

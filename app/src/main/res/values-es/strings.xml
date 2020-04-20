@@ -139,7 +139,7 @@
     <string name="TransactionInfo_DoubleSpendNote">¡Riesgo de doble gasto!</string>
     <!-- Info -->
     <string name="Info_LockTime_Title">TimeLock</string>
-    <string name="Info_LockTime_Description">El remitente envió estos fondos con un bloqueo del gasto que expirará %s.\n\nNo te preocupes, los Bitcoins recibidos ya son tuyos, pero hasta que el período de bloqueo expire, no puedes gastarlos en la red Groestlcoin.</string>
+    <string name="Info_LockTime_Description">El remitente envió estos fondos con un bloqueo del gasto que expirará %s.\n\nNo te preocupes, los Groestlcoins recibidos ya son tuyos, pero hasta que el período de bloqueo expire, no puedes gastarlos en la red Groestlcoin.</string>
     <string name="Info_DoubleSpend_Title">Doble gasto</string>
     <string name="Info_DoubleSpend_Description">¡Riesgo de doble gasto! Hay otra transacción en blockchain que intenta gastar entradas usadas en esta transacción. Solo una transacción será aceptada por la red.</string>
     <string name="Info_DoubleSpend_ThisTx">Esta Tx</string>
@@ -266,7 +266,7 @@
     <string name="ExperimentalFeatures_BitcoinHodling">TimeLock</string>
     <!-- Bitcoin Hodling -->
     <string name="BitcoinHodling_Title">TimeLock</string>
-    <string name="BitcoinHodling_Description">Permite enviar Bitcoins que no se pueden gastar hasta la fecha establecida.\n\nEl receptor de dicha transacción debe utilizar el monedero Unstoppable GRS.\n\nSólo el monedero Unstoppable GRS puede identificar correctamente tales transacciones en la red Groestlcoin, así como permitir que el receptor gaste esos Bitcoins después de que expire el período de bloqueo.\n\nSi eres un HODLer, puedes usar esta función para obligarte a retener tus Bitcoins enviándote dicha transacción a ti mismo.\n\nPor ser característica experimental, la cantidad máxima por transacción está limitada a 0.5 GRS.</string>
+    <string name="BitcoinHodling_Description">Permite enviar Groestlcoins que no se pueden gastar hasta la fecha establecida.\n\nEl receptor de dicha transacción debe utilizar el monedero Unstoppable GRS.\n\nSólo el monedero Unstoppable GRS puede identificar correctamente tales transacciones en la red Groestlcoin, así como permitir que el receptor gaste esos Groestlcoins después de que expire el período de bloqueo.\n\nSi eres un HODLer, puedes usar esta función para obligarte a retener tus Groestlcoins enviándote dicha transacción a ti mismo.\n\nPor ser característica experimental, la cantidad máxima por transacción está limitada a 0.5 GRS.</string>
     <!--Manage Keys-->
     <string name="ManageKeys_Title">Gestionar Monederos</string>
     <string name="ManageKeys_Create">Crear</string>
