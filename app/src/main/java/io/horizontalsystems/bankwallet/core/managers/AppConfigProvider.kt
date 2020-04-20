@@ -14,7 +14,7 @@ import java.math.BigDecimal
 class AppConfigProvider : IAppConfigProvider, ILanguageConfigProvider, IAppConfigTestMode {
 
     override val companyWebPageLink: String = "https://groestlcoin.org"
-    override val appWebPageLink: String = "https://unstoppable.money"
+    override val appWebPageLink: String = "https://groestlcoin.org"
     override val reportEmail = "support@groestlcoin.org"
     override val walletHelpTelegramGroup = "unstoppable_wallet"
     override val developersTelegramGroup = "unstoppable_development"
