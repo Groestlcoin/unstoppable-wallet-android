@@ -9,7 +9,7 @@ import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.FullTransacti
 class GroestlcoinEsploraProvider(val testMode: Boolean) : FullTransactionInfoModule.BitcoinForksProvider {
     override val name: String = "esplora.groestlcoin.org"
     private val baseApiUrl = "${if (testMode) "https://esplora-test" else "https://esplora"}.groestlcoin.org"
-    override val pingUrl = "$baseApiUrl/block/0"
+    override val pingUrl = "$baseApiUrl/api/blocks/tip/height"
 
     override fun url(hash: String): String {
         return "$baseApiUrl/tx/$hash"

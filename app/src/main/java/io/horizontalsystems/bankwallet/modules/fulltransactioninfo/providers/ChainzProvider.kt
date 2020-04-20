@@ -9,7 +9,7 @@ import io.horizontalsystems.bankwallet.modules.fulltransactioninfo.FullTransacti
 class GroestlcoinChainzProvider(val testMode: Boolean) : FullTransactionInfoModule.BitcoinForksProvider {
     override val name: String = "chainz.cryptoid.info/grs"
     private val baseApiUrl = "https://chainz.cryptoid.info/grs${if (testMode) "-test" else ""}"
-    override val pingUrl = "$baseApiUrl/block.dws?1"
+    override val pingUrl = "$baseApiUrl/api.dws?key=d47da926b82e&q=txinfo&t=nodes"
 
     override fun url(hash: String): String {
         return "$baseApiUrl/tx.dws?$hash"
