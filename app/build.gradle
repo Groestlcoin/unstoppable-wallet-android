@@ -13,14 +13,13 @@ androidExtensions {
 }
 
 def computeVersionCode() {
-    ext.buildNumber = System.getenv("BUILD_NUMBER") ?: 23
+    ext.buildNumber = System.getenv("BUILD_NUMBER") ?: 125
     return "$buildNumber".toInteger()
 }
 
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId buildProperties.get("application_id")
         minSdkVersion 26
         targetSdkVersion 29
         versionCode computeVersionCode()
@@ -82,18 +81,26 @@ android {
     productFlavors {
         devTestnet {
             buildConfigField "boolean", "testMode", "true"
-            applicationIdSuffix ".dev.testnet"
+            applicationId "org.groestlcoin.unstoppable"
+
+            applicationIdSuffix ".testnet"
         }
         devMainnetMaster {
             buildConfigField "boolean", "testMode", "false"
+            applicationId "org.groestlcoin.unstoppable"
+
             applicationIdSuffix ".dev.master"
         }
         devMainnetVersion {
             buildConfigField "boolean", "testMode", "false"
+            applicationId "org.groestlcoin.unstoppable"
+
             applicationIdSuffix ".dev.version"
         }
         productionMainnet {
             buildConfigField "boolean", "testMode", "false"
+            applicationId "org.groestlcoin.unstoppable"
+
         }
     }
     compileOptions {
