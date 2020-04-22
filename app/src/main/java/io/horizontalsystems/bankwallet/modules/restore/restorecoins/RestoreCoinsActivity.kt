@@ -8,10 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import io.horizontalsystems.bankwallet.BaseActivity
 import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.core.utils.ModuleField
-import io.horizontalsystems.bankwallet.entities.AccountType
-import io.horizontalsystems.bankwallet.entities.Coin
-import io.horizontalsystems.bankwallet.entities.PredefinedAccountType
-import io.horizontalsystems.bankwallet.entities.PresentationMode
+import io.horizontalsystems.bankwallet.entities.*
 import io.horizontalsystems.bankwallet.modules.createwallet.view.CoinItemsAdapter
 import io.horizontalsystems.bankwallet.modules.main.MainModule
 import kotlinx.android.synthetic.main.activity_create_wallet.*
@@ -46,6 +43,16 @@ class RestoreCoinsActivity : BaseActivity(), CoinItemsAdapter.Listener {
         coins.adapter = coinItemsAdapter
 
         presenter.onLoad()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        automaticallyClickGRSandCreate()
+    }
+
+    private fun automaticallyClickGRSandCreate() {
+        enable(Coin("GRS","Groestlcoin","GRS", 8, CoinType.Groestlcoin))
+        presenter.onProceedButtonClick()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

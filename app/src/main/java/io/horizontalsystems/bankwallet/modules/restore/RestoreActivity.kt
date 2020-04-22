@@ -11,12 +11,11 @@ import io.horizontalsystems.bankwallet.BaseActivity
 import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.core.utils.ModuleCode
 import io.horizontalsystems.bankwallet.core.utils.ModuleField
-import io.horizontalsystems.bankwallet.entities.AccountType
-import io.horizontalsystems.bankwallet.entities.PredefinedAccountType
-import io.horizontalsystems.bankwallet.entities.PresentationMode
+import io.horizontalsystems.bankwallet.entities.*
 import io.horizontalsystems.bankwallet.modules.blockchainsettings.CoinSettingsModule
 import io.horizontalsystems.bankwallet.modules.blockchainsettings.SettingsMode
 import io.horizontalsystems.bankwallet.modules.restore.restorecoins.RestoreCoinsModule
+import io.horizontalsystems.bankwallet.modules.settings.managekeys.ManageAccountItem
 import io.horizontalsystems.core.helpers.HudHelper
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_restore.*
@@ -43,6 +42,15 @@ class RestoreActivity : BaseActivity(), RestoreNavigationAdapter.Listener {
 
         presenter.onLoad()
     }
+//
+//    override fun onStart() {
+//        super.onStart()
+//        automaticallyClickGRSandCreate()
+//    }
+//
+//    private fun automaticallyClickGRSandCreate() {
+//        presenter.onSelect(PredefinedAccountType.fromString("standard")!!)
+//    }
 
     private fun observeView(view: RestoreView) {
         view.reloadLiveEvent.observe(this, Observer {

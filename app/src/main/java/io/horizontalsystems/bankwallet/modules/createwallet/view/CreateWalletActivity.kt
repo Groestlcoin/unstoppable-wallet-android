@@ -9,6 +9,7 @@ import io.horizontalsystems.bankwallet.BaseActivity
 import io.horizontalsystems.bankwallet.R
 import io.horizontalsystems.bankwallet.core.utils.ModuleField
 import io.horizontalsystems.bankwallet.entities.Coin
+import io.horizontalsystems.bankwallet.entities.CoinType
 import io.horizontalsystems.bankwallet.entities.PredefinedAccountType
 import io.horizontalsystems.bankwallet.entities.PresentationMode
 import io.horizontalsystems.bankwallet.modules.createwallet.CreateWalletModule
@@ -45,6 +46,16 @@ class CreateWalletActivity : BaseActivity(), CoinItemsAdapter.Listener {
         coins.adapter = coinItemsAdapter
 
         presenter.onLoad()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        automaticallyClickGRSandCreate()
+    }
+
+    private fun automaticallyClickGRSandCreate() {
+        enable(Coin("GRS",       "Groestlcoin",             "GRS",          8,      CoinType.Groestlcoin))
+        presenter.onCreateButtonClick()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -17,7 +17,7 @@ class RestorePresenter(
     override var items = listOf<PredefinedAccountType>()
 
     override fun onLoad() {
-        items = predefinedAccountTypeManager.allTypes
+        items = listOf(predefinedAccountTypeManager.allTypes.find { it.toString() == "standard" }!!)
         view.reload(items)
     }
 
