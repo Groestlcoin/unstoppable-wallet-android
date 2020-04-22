@@ -131,7 +131,9 @@ class GroestlcoinAdapter(override val kit: GroestlcoinKit) :
         private fun createKit(wallet: Wallet, testMode: Boolean): GroestlcoinKit {
             val account = wallet.account
             val accountType = account.type
-            val walletDerivation = wallet.settings[CoinSetting.Derivation]?.let { AccountType.Derivation.valueOf(it) }
+            var walletDerivation = wallet.settings[CoinSetting.Derivation]?.let { AccountType.Derivation.valueOf(it) }
+            if(walletDerivation == null)
+                walletDerivation = AccountType.Derivation.bip49
             val syncMode = wallet.settings[CoinSetting.SyncMode]?.let { SyncMode.valueOf(it) }
             if (accountType is AccountType.Mnemonic && accountType.words.size == 12) {
                 return GroestlcoinKit(context = App.instance,
